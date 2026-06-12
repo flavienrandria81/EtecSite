@@ -7,7 +7,7 @@
 		<groupId>org.parent</groupId>
 		<artifactId>etec-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath/>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<groupId>com.example.Etudiant</groupId>
 	<artifactId>etudiant</artifactId>

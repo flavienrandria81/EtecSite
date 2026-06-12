@@ -30,6 +30,7 @@
     <module>api_gateway</module>
     <module>discovery_service</module>
     <module>config_server</module>
+    <module>enligne</module>
   </modules>
 
   <properties>

@@ -5,35 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbd19bf9-a7b3-4a75-b922-5507148f3c50" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Encadrement/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Encadrement/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Encadrement/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Encadrement/demo/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Encadreur/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Encadreur/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Encadreur/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Encadreur/demo/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enseignant/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Enseignant/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Enseignant/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Enseignant/demo/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Etudiant/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Etudiant/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Etudiant/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Etudiant/demo/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/actualite/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/actualite/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/actualite/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/actualite/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config_server/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery_service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/discovery_service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery_service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/discovery_service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empoiDuTemps/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/empoiDuTemps/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empoiDuTemps/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/empoiDuTemps/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/historique/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/historique/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/historique/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/historique/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matiere/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/matiere/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matiere/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matiere/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/note/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/note/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/note/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/note/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/organigramme/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/organigramme/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/organigramme/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/organigramme/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presence/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/presence/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/president/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/president/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slides/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/slides/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utilisateur/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/utilisateur/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,6 +33,16 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -69,20 +58,20 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/Mihaja/ETECSite/etec-parent",
-    "project.structure.last.edited": "Modules",
+    "last_opened_file_path": "D:/Mihaja/ETECSite/etec-parent/historique",
+    "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
-  <component name="RunManager" selected="Application.ActualiteApplication">
-    <configuration name="ActualiteApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.etec.actualite.ActualiteApplication" />
-      <module name="actualite" />
+  <component name="RunManager" selected="Application.SlidesApplication">
+    <configuration name="NoteApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.etudiant.note.NoteApplication" />
+      <module name="note" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.etec.actualite.*" />
+          <option name="PATTERN" value="com.etudiant.note.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -90,12 +79,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.api.api_gateway.ApiGatewayApplication" />
-      <module name="api_gateway" />
+    <configuration name="OrganigrammeApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.etec.organigramme.OrganigrammeApplication" />
+      <module name="organigramme" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.api.api_gateway.*" />
+          <option name="PATTERN" value="com.etec.organigramme.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -103,12 +92,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ConfigServerApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.config.ConfigServerApplication" />
-      <module name="config_server" />
+    <configuration name="PresenceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.abscence.presence.PresenceApplication" />
+      <module name="presence" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.config.*" />
+          <option name="PATTERN" value="com.abscence.presence.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -144,11 +133,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ActualiteApplication" />
-        <item itemvalue="Application.ApiGatewayApplication" />
-        <item itemvalue="Application.ConfigServerApplication" />
         <item itemvalue="Application.SlidesApplication" />
         <item itemvalue="Application.PresidentApplication" />
+        <item itemvalue="Application.PresenceApplication" />
+        <item itemvalue="Application.OrganigrammeApplication" />
+        <item itemvalue="Application.NoteApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -162,5 +151,16 @@
       <updated>1780396708837</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
