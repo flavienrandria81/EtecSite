@@ -7,33 +7,16 @@
     <list default="true" id="cbd19bf9-a7b3-4a75-b922-5507148f3c50" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Encadrement/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Encadrement/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Encadrement/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Encadrement/demo/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Encadreur/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Encadreur/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Encadreur/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Encadreur/demo/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enseignant/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Enseignant/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Enseignant/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Enseignant/demo/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Etudiant/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Etudiant/demo/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Etudiant/demo/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Etudiant/demo/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/actualite/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/actualite/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/actualite/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/actualite/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_gateway/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/api_gateway/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_server/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/config_server/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery_service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/discovery_service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery_service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/discovery_service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Etudiant/demo/src/main/java/com/example/Etudiant/demo/Entity/Etudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/Etudiant/demo/src/main/java/com/example/Etudiant/demo/Entity/Etudiant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/empoiDuTemps/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/empoiDuTemps/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empoiDuTemps/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/empoiDuTemps/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/historique/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/historique/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/historique/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/historique/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/matiere/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/matiere/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matiere/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/matiere/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/note/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/note/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/note/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/note/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/organigramme/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/organigramme/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/organigramme/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/organigramme/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/presence/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/presence/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/president/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/president/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/slides/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/slides/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utilisateur/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/utilisateur/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -63,33 +46,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "D:/Mihaja/ETECSite/etec-parent",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Mihaja/ETECSite/etec-parent/Etudiant&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Application.ActualiteApplication">
-    <configuration name="ActualiteApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.etec.actualite.ActualiteApplication" />
-      <module name="actualite" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.etec.actualite.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+}</component>
+  <component name="RunManager" selected="Application.ApiGatewayApplication">
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.api.api_gateway.ApiGatewayApplication" />
       <module name="api_gateway" />
@@ -116,12 +86,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PresidentApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.mots.president.PresidentApplication" />
-      <module name="president" />
+    <configuration name="DiscoveryServiceApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.deiscovery.DiscoveryServiceApplication" />
+      <module name="discovery_service" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.mots.president.*" />
+          <option name="PATTERN" value="com.deiscovery.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -129,12 +99,25 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SlidesApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.etec.slides.SlidesApplication" />
-      <module name="slides" />
+    <configuration name="EmpoiDuTempsApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.etudiant.empoiDuTemps.EmpoiDuTempsApplication" />
+      <module name="empoiDuTemps" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.etec.slides.*" />
+          <option name="PATTERN" value="com.etudiant.empoiDuTemps.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="com.example.Encadreur.demo.DemoApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.Encadreur.demo.DemoApplication" />
+      <module name="encadreur" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.Encadreur.demo.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -144,11 +127,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.ActualiteApplication" />
         <item itemvalue="Application.ApiGatewayApplication" />
+        <item itemvalue="Application.DiscoveryServiceApplication" />
         <item itemvalue="Application.ConfigServerApplication" />
-        <item itemvalue="Application.SlidesApplication" />
-        <item itemvalue="Application.PresidentApplication" />
+        <item itemvalue="Application.EmpoiDuTempsApplication" />
+        <item itemvalue="Application.com.example.Encadreur.demo.DemoApplication" />
       </list>
     </recent_temporary>
   </component>
