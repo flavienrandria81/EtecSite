@@ -1,4 +1,4 @@
-package com.example.Etudiant.demo.Entity;
+package com.example.Etudiant.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,10 +17,13 @@ public class Etudiant {
     private Long id;
 
     private Long userId;
+    private Long filiereId;
 
     private String matricule;
     private String cin;
     private String adresse;
     private String phone;
     private String photo;
+    private String releve;
+    private String diplome;
 }

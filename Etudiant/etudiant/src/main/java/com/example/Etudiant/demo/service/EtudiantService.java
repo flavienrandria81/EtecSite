@@ -1,0 +1,191 @@
+package com.example.Etudiant.demo.service;
+
+import com.example.Etudiant.demo.client.UserClient;
+import com.example.Etudiant.demo.dto.UserDto;
+import com.example.Etudiant.demo.entity.Etudiant;
+import com.example.Etudiant.demo.repository.EtudiantRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class EtudiantService {
+
+    private final EtudiantRepository etudiantRepository;
+    private final UserClient userClient;
+    private final String UPLOAD_DIR = "upload/";
+
+    // 🔥 CREATE ETUDIANT
+    public Etudiant createEtudiant(String matricule,
+                                   String cin,
+                                   String adresse,
+                                   String phone,
+                                   MultipartFile photo,
+                                   MultipartFile releve,
+                                   MultipartFile diplome,
+                                   HttpServletRequest request) {
+        try {
+            File dir = new File(UPLOAD_DIR);
+            if (dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String photoName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+            Path photoPath = Paths.get(UPLOAD_DIR, photoName);
+            Files.write(photoPath, photo.getBytes());
+
+            String releveName = UUID.randomUUID() + "_" + releve.getOriginalFilename();
+            Path relevePath = Paths.get(UPLOAD_DIR, releveName);
+            Files.write(relevePath, photo.getBytes());
+
+            String diplomeName = UUID.randomUUID() + "_" + diplome.getOriginalFilename();
+            Path diplomePath = Paths.get(UPLOAD_DIR, diplomeName);
+            Files.write(diplomePath, photo.getBytes());
+
+
+            Etudiant etudiant = new Etudiant();
+            etudiant.setMatricule(matricule);
+            etudiant.setCin(cin);
+            etudiant.setAdresse(adresse);
+            etudiant.setPhone(phone);
+            etudiant.setPhoto(photoName);
+            etudiant.setReleve(releveName);
+            etudiant.setDiplome(diplomeName);
+
+            // 🔵 récupérer userId depuis JwtFilter
+            Long userId = (Long) request.getAttribute("userId");
+
+            if (userId == null) {
+                throw new RuntimeException("userId introuvable dans le token");
+            }
+
+            // 🔵 lien User ↔ Etudiant
+            etudiant.setUserId(userId);
+
+            return etudiantRepository.save(etudiant);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur de créer ces fichiers");
+        }
+
+    }
+    // 🔥 GET ALL ETUDIANTS
+    public Page<Etudiant> getAllEtudiants(Pageable pageable) {
+        return etudiantRepository.findAll(pageable);
+    }
+
+    // 🔥 GET BY ID
+    public Etudiant getEtudiantById(Long id) {
+        return etudiantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Etudiant introuvable"));
+    }
+
+    // 🔥 GET BY MATRICULE
+    public Etudiant getByMatricule(String matricule) {
+        return etudiantRepository.findByMatricule(matricule)
+                .orElseThrow(() -> new RuntimeException("Matricule introuvable"));
+    }
+
+    // 🔥 UPDATE ETUDIANT
+    public Etudiant updateEtudiant(Long id,
+                                   String matricule,
+                                   String cin,
+                                   String adresse,
+                                   String phone,
+                                   MultipartFile photo,
+                                   MultipartFile releve,
+                                   MultipartFile diplome) {
+
+        Etudiant existing = getEtudiantById(id);
+
+        existing.setMatricule(matricule);
+        existing.setCin(cin);
+        existing.setAdresse(adresse);
+        existing.setPhone(phone);
+
+        try {
+            if (photo != null && photo.isEmpty()) {
+                if (existing.getPhoto() != null) {
+                    File old = new File(UPLOAD_DIR + existing.getPhoto());
+                    if (old.exists()) old.delete();
+
+                    String photoName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+                    Path path = Paths.get(UPLOAD_DIR, photoName);
+                    Files.write(path, photo.getBytes());
+
+                    existing.setPhoto(photoName);
+                }
+            }
+
+            if (releve != null && releve.isEmpty()) {
+                if (existing.getReleve() != null) {
+                    File old = new File(UPLOAD_DIR + existing.getReleve());
+                    if (old.exists()) old.delete();
+
+                    String releveName = UUID.randomUUID() + "_" + releve.getOriginalFilename();
+                    Path path = Paths.get(UPLOAD_DIR, releveName);
+                    Files.write(path, releve.getBytes());
+
+                    existing.setReleve(releveName);
+                }
+            }
+
+            if (diplome != null && diplome.isEmpty()) {
+                if (existing.getDiplome() != null) {
+                    File old = new File(UPLOAD_DIR + existing.getDiplome());
+                    if (old.exists()) old.delete();
+
+                    String diplomeName = UUID.randomUUID() + "_" + diplome.getOriginalFilename();
+                    Path path = Paths.get(UPLOAD_DIR, diplomeName);
+                    Files.write(path, diplome.getBytes());
+
+                    existing.setDiplome(diplomeName);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Erreur de modifier ces fichiers");
+        }
+
+        return etudiantRepository.save(existing);
+    }
+
+    // 🔥 DELETE ETUDIANT
+    public void deleteEtudiant(Long id) {
+        etudiantRepository.deleteById(id);
+    }
+
+    public Map<String,Object> getEtudiantComplet(Long id){
+
+        Etudiant etudiant =
+                getEtudiantById(id);
+
+
+        UserDto user =
+                userClient.getUserById(
+                        etudiant.getUserId()
+                );
+
+
+        return Map.of(
+                "etudiant", etudiant,
+                "user", user
+        );
+    }
+}

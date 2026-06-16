@@ -12,7 +12,6 @@
       <change beforePath="$PROJECT_DIR$/Encadreur/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Encadreur/demo/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Enseignant/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Enseignant/demo/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Etudiant/demo/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Etudiant/demo/pom.xml" afterDir="false" />
-<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/Etudiant/demo/src/main/java/com/example/Etudiant/demo/Entity/Etudiant.java" beforeDir="false" afterPath="$PROJECT_DIR$/Etudiant/demo/src/main/java/com/example/Etudiant/demo/Entity/Etudiant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/empoiDuTemps/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/empoiDuTemps/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/historique/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/historique/pom.xml" afterDir="false" />
@@ -20,9 +19,7 @@
       <change beforePath="$PROJECT_DIR$/note/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/note/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/organigramme/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/organigramme/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/presence/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/presence/pom.xml" afterDir="false" />
-=======
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
->>>>>>> 9f03b8188f816637c27ec3e5dffaedd242b6e41b
       <change beforePath="$PROJECT_DIR$/utilisateur/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/utilisateur/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -62,7 +59,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-<<<<<<< HEAD
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
@@ -80,7 +76,6 @@
     <configuration name="ApiGatewayApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.api.api_gateway.ApiGatewayApplication" />
       <module name="api_gateway" />
-=======
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -111,7 +106,6 @@
     <configuration name="OrganigrammeApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.etec.organigramme.OrganigrammeApplication" />
       <module name="organigramme" />
->>>>>>> 9f03b8188f816637c27ec3e5dffaedd242b6e41b
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.etec.organigramme.*" />
@@ -176,19 +170,16 @@
     </configuration>
     <recent_temporary>
       <list>
-<<<<<<< HEAD
         <item itemvalue="Application.ApiGatewayApplication" />
         <item itemvalue="Application.DiscoveryServiceApplication" />
         <item itemvalue="Application.ConfigServerApplication" />
         <item itemvalue="Application.EmpoiDuTempsApplication" />
         <item itemvalue="Application.com.example.Encadreur.demo.DemoApplication" />
-=======
         <item itemvalue="Application.SlidesApplication" />
         <item itemvalue="Application.PresidentApplication" />
         <item itemvalue="Application.PresenceApplication" />
         <item itemvalue="Application.OrganigrammeApplication" />
         <item itemvalue="Application.NoteApplication" />
->>>>>>> 9f03b8188f816637c27ec3e5dffaedd242b6e41b
       </list>
     </recent_temporary>
   </component>
