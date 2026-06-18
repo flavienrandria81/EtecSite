@@ -30,34 +30,77 @@ public class UserController {
 
     @PostMapping("/registration")
     public ResponseEntity<?> register(@RequestBody User user) {
+
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.badRequest().body("Email is already in use");
+            return ResponseEntity.badRequest()
+                    .body("Email is already in use");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return ResponseEntity.ok(userRepository.save(user));
+
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
+
+        User savedUser = userRepository.save(user);
+
+        return ResponseEntity.ok(savedUser);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user) {
+
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
+            Authentication authentication =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    user.getEmail(),
+                                    user.getPassword()
+                            )
+                    );
+
             if (authentication.isAuthenticated()) {
-                Map<String, Object> authData = new HashMap<>();
-                authData.put("token", jwtUtils.generationToken(user.getEmail(),
-                                                        user.getRole(),
-                                                        user.getId()));
+
+                // récupérer l'utilisateur complet depuis la base
+                User dbUser =
+                        userRepository.findByEmail(
+                                user.getEmail()
+                        );
+
+                Map<String, Object> authData =
+                        new HashMap<>();
+
+                authData.put(
+                        "token",
+                        jwtUtils.generationToken(
+                                dbUser.getEmail(),
+                                dbUser.getRole(),
+                                dbUser.getId()
+                        )
+                );
+
                 authData.put("type", "Bearer");
+
+                authData.put("email", dbUser.getEmail());
+                authData.put("role", dbUser.getRole());
+                authData.put("userId", dbUser.getId());
+
                 return ResponseEntity.ok(authData);
             }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Email or password");
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid Email or Password");
+
         } catch (AuthenticationException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Email or Password");
+
+            log.error("Login Error : {}", e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid Email or Password");
         }
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id){
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
 
         return userRepository.findById(id)
                 .map(ResponseEntity::ok)

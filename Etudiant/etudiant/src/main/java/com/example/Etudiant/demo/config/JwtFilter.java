@@ -6,11 +6,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -48,13 +50,20 @@ public class JwtFilter extends OncePerRequestFilter {
                             new UsernamePasswordAuthenticationToken(
                                     email,
                                     null,
-                                    null
+                                    Collections.singletonList(
+                                            new SimpleGrantedAuthority("ROLE_" + role)
+                                    )
                             );
-
                     // 🔵 stocker infos pour Controller/Service
                     request.setAttribute("userId", userId);
                     request.setAttribute("role", role);
                     request.setAttribute("email", email);
+
+                    /*System.out.println("Authorization = " + authHeader);
+                    System.out.println("JWT = " + jwt);
+                    System.out.println("Email = " + email);
+                    System.out.println("Role = " + role);
+                    System.out.println("UserId = " + userId);*/
 
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }

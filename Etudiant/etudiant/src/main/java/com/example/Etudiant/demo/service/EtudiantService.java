@@ -120,7 +120,7 @@ public class EtudiantService {
         existing.setPhone(phone);
 
         try {
-            if (photo != null && photo.isEmpty()) {
+            if (photo != null && !photo.isEmpty()) {
                 if (existing.getPhoto() != null) {
                     File old = new File(UPLOAD_DIR + existing.getPhoto());
                     if (old.exists()) old.delete();
@@ -133,7 +133,7 @@ public class EtudiantService {
                 }
             }
 
-            if (releve != null && releve.isEmpty()) {
+            if (releve != null && !releve.isEmpty()) {
                 if (existing.getReleve() != null) {
                     File old = new File(UPLOAD_DIR + existing.getReleve());
                     if (old.exists()) old.delete();
@@ -146,7 +146,7 @@ public class EtudiantService {
                 }
             }
 
-            if (diplome != null && diplome.isEmpty()) {
+            if (diplome != null && !diplome.isEmpty()) {
                 if (existing.getDiplome() != null) {
                     File old = new File(UPLOAD_DIR + existing.getDiplome());
                     if (old.exists()) old.delete();

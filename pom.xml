@@ -31,6 +31,8 @@
     <module>discovery_service</module>
     <module>config_server</module>
     <module>enligne</module>
+    <module>niveau</module>
+    <module>filiere</module>
   </modules>
 
   <properties>

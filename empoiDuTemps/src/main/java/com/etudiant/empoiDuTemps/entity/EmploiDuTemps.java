@@ -18,11 +18,14 @@ public class EmploiDuTemps {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long filiereId;
+    private Long matiereId;
+    private Long semestreId;
     private LocalDate date;
     private LocalTime heureDebut;
     private LocalTime heureFin;
+    private String jours;
     private String anneesUniversitaire;
-    private String semstre;
+
 
 }
