@@ -35,6 +35,8 @@ public class EtudiantService {
                                    String cin,
                                    String adresse,
                                    String phone,
+                                   Long filiereId,
+                                   Long niveauId,
                                    MultipartFile photo,
                                    MultipartFile releve,
                                    MultipartFile diplome,
@@ -70,12 +72,15 @@ public class EtudiantService {
             // 🔵 récupérer userId depuis JwtFilter
             Long userId = (Long) request.getAttribute("userId");
 
+
             if (userId == null) {
                 throw new RuntimeException("userId introuvable dans le token");
             }
 
             // 🔵 lien User ↔ Etudiant
             etudiant.setUserId(userId);
+            etudiant.setFiliereId(filiereId);
+            etudiant.setNiveauId(niveauId);
 
             return etudiantRepository.save(etudiant);
 

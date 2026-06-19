@@ -18,6 +18,7 @@ public class Etudiant {
 
     private Long userId;
     private Long filiereId;
+    private Long niveauId;
 
     private String matricule;
     private String cin;

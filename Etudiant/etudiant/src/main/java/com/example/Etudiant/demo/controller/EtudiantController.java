@@ -23,12 +23,14 @@ public class EtudiantController {
                            @RequestParam String cin,
                            @RequestParam String adresse,
                            @RequestParam String phone,
+                           @RequestParam Long filiereId,
+                           @RequestParam Long niveauId,
                            @RequestParam("photo") MultipartFile photo,
                            @RequestParam("releve") MultipartFile releve,
                            @RequestParam("diplome") MultipartFile diplome,
                            HttpServletRequest request) {
 
-        return etudiantService.createEtudiant(matricule, cin, adresse, phone, photo, releve, diplome, request);
+        return etudiantService.createEtudiant(matricule, cin, adresse, phone,filiereId,niveauId, photo, releve, diplome, request);
     }
 
     @GetMapping
