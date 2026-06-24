@@ -2,6 +2,8 @@ package com.example.Enseignant.demo.Service;
 
 import com.example.Enseignant.demo.Entity.Enseignant;
 import com.example.Enseignant.demo.Repository.EnseignantRepository;
+import com.example.Enseignant.demo.client.FiliereClient;
+import com.example.Enseignant.demo.client.MatiereClient;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,8 @@ import java.util.UUID;
 public class EnseignantService {
 
     private final EnseignantRepository enseignantRepository;
+    private final FiliereClient filiereClient;
+    private final MatiereClient matiereClient;
     private final String UPLOAD_DIR = "/upload";
 
 
@@ -30,6 +34,7 @@ public class EnseignantService {
                                        String adresse,
                                        String phone,
                                        String cin,
+                                       String specialite,
                                        Long filiereId,
                                        Long matiereId,
                                        MultipartFile photo,
@@ -59,7 +64,7 @@ public class EnseignantService {
             enseignant.setAdresse(adresse);
             enseignant.setPhone(phone);
             enseignant.setCin(cin);
-            enseignant.setSpecialite(specialate);
+            enseignant.setSpecialite(specialite);
             enseignant.setPhoto(photoName);
             enseignant.setDiplome(diplomeName);
 
@@ -71,10 +76,18 @@ public class EnseignantService {
             enseignant.setUserId(userId);
             enseignant.setFiliereId(filiereId);
             enseignant.setMatiereId(matiereId);
+
+            try {
+                filiereClient.getFiliere(filiereId);
+                matiereClient.getMatiere(matiereId);
+            } catch (Exception e) {
+                throw new RuntimeException("Filière ou Matière introuvable");
+            }
             return enseignantRepository.save(enseignant);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            throw new RuntimeException("Erreur de créer ces fichiers");
         }
 
     }

@@ -60,10 +60,11 @@ public class EnseignantController {
                            @RequestParam String cin,
                            @RequestParam String adresse,
                            @RequestParam String phone,
+                           @RequestParam String specialite,
                            @RequestParam(value = "photo", required = false) MultipartFile photo,
                            @RequestParam(value = "diplome", required = false) MultipartFile diplome
     ) {
-        return enseignantService.updateEnseignant(id, matricule, cin, adresse, phone, photo, diplome);
+        return enseignantService.updateEnseignant(id, matricule, cin, adresse, phone, specialite, photo, diplome);
     }
 
     // DELETE /api/enseignants/{id}

@@ -33,6 +33,7 @@
     <module>enligne</module>
     <module>niveau</module>
     <module>filiere</module>
+    <module>domaine</module>
   </modules>
 
   <properties>

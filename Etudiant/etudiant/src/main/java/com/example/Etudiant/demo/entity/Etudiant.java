@@ -19,6 +19,9 @@ public class Etudiant {
     private Long userId;
     private Long filiereId;
     private Long niveauId;
+    private Long domaineId;
+    @Enumerated(EnumType.STRING)
+    private TypeFormation typeFormation;
 
     @Column(unique = true)
     private String matricule;

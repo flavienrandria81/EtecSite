@@ -1,5 +1,6 @@
 package com.example.Etudiant.demo.service;
 
+import com.example.Etudiant.demo.client.DomaineClient;
 import com.example.Etudiant.demo.client.FiliereClient;
 import com.example.Etudiant.demo.client.NiveauClient;
 import com.example.Etudiant.demo.client.UserClient;
@@ -34,6 +35,7 @@ public class EtudiantService {
     private final UserClient userClient;
     private final FiliereClient filiereClient;
     private final NiveauClient niveauClient;
+    private final DomaineClient domaineClient;
     private final String UPLOAD_DIR = "upload/";
 
     // CREATE ETUDIANT
@@ -43,6 +45,7 @@ public class EtudiantService {
                                    String phone,
                                    Long filiereId,
                                    Long niveauId,
+                                   Long domaineId,
                                    MultipartFile photo,
                                    MultipartFile releve,
                                    MultipartFile diplome,
@@ -91,10 +94,12 @@ public class EtudiantService {
             etudiant.setUserId(userId);
             etudiant.setFiliereId(filiereId);
             etudiant.setNiveauId(niveauId);
+            etudiant.setDomaineId(domaineId);
 
             try {
                 filiereClient.getFiliere(filiereId);
                 niveauClient.getNiveau(niveauId);
+                domaineClient.getDomaine(domaineId);
             } catch (Exception e) {
                 throw new RuntimeException("Filière ou niveau introuvable");
             }
@@ -102,6 +107,7 @@ public class EtudiantService {
             System.out.println("userId = " + userId);
             System.out.println("filiereId = " + filiereId);
             System.out.println("niveauId = " + niveauId);
+            System.out.println("domaineId = " + domaineId);
 
             return etudiantRepository.save(etudiant);
 
