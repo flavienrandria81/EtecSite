@@ -1,6 +1,7 @@
 package com.example.Etudiant.demo.controller;
 
 import com.example.Etudiant.demo.entity.Etudiant;
+import com.example.Etudiant.demo.entity.TypeFormation;
 import com.example.Etudiant.demo.service.EtudiantService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +25,28 @@ public class EtudiantController {
                            @RequestParam String cin,
                            @RequestParam String adresse,
                            @RequestParam String phone,
+                           @RequestParam TypeFormation typeFormation,
                            @RequestParam Long filiereId,
                            @RequestParam Long niveauId,
+                           @RequestParam Long domaineId,
                            @RequestParam("photo") MultipartFile photo,
                            @RequestParam("releve") MultipartFile releve,
                            @RequestParam("diplome") MultipartFile diplome,
                            HttpServletRequest request) {
 
-        return etudiantService.createEtudiant(matricule, cin, adresse, phone,filiereId,niveauId, photo, releve, diplome, request);
+        return etudiantService.createEtudiant(
+                matricule,
+                cin,
+                adresse,
+                phone,
+                typeFormation,
+                filiereId,
+                niveauId,
+                domaineId,
+                photo,
+                releve,
+                diplome,
+                request);
     }
 
     @GetMapping
@@ -55,11 +70,12 @@ public class EtudiantController {
                            @RequestParam String cin,
                            @RequestParam String adresse,
                            @RequestParam String phone,
+                           @RequestParam(required = false) TypeFormation typeFormation,
                            @RequestParam(value = "photo", required = false) MultipartFile photo,
                            @RequestParam(value = "releve", required = false) MultipartFile releve,
                            @RequestParam(value = "diplome", required = false) MultipartFile diplome
                            ) {
-        return etudiantService.updateEtudiant(id, matricule, cin, adresse, phone, photo, releve, diplome);
+        return etudiantService.updateEtudiant(id, matricule, cin, adresse, phone, typeFormation, photo, releve, diplome);
     }
 
     @DeleteMapping("/{id}")

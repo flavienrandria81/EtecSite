@@ -4,10 +4,12 @@ import com.example.Etudiant.demo.client.DomaineClient;
 import com.example.Etudiant.demo.client.FiliereClient;
 import com.example.Etudiant.demo.client.NiveauClient;
 import com.example.Etudiant.demo.client.UserClient;
+import com.example.Etudiant.demo.dto.DomaineDto;
 import com.example.Etudiant.demo.dto.FiliereDto;
 import com.example.Etudiant.demo.dto.NiveauDto;
 import com.example.Etudiant.demo.dto.UserDto;
 import com.example.Etudiant.demo.entity.Etudiant;
+import com.example.Etudiant.demo.entity.TypeFormation;
 import com.example.Etudiant.demo.repository.EtudiantRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +45,7 @@ public class EtudiantService {
                                    String cin,
                                    String adresse,
                                    String phone,
+                                   TypeFormation typeFormation,
                                    Long filiereId,
                                    Long niveauId,
                                    Long domaineId,
@@ -78,6 +81,7 @@ public class EtudiantService {
             etudiant.setCin(cin);
             etudiant.setAdresse(adresse);
             etudiant.setPhone(phone);
+            etudiant.setTypeFormation(typeFormation);
             etudiant.setPhoto(photoName);
             etudiant.setReleve(releveName);
             etudiant.setDiplome(diplomeName);
@@ -96,18 +100,19 @@ public class EtudiantService {
             etudiant.setNiveauId(niveauId);
             etudiant.setDomaineId(domaineId);
 
+            System.out.println("userId = " + userId);
+            System.out.println("filiereId = " + filiereId);
+            System.out.println("niveauId = " + niveauId);
+            System.out.println("domaineId = " + domaineId);
+
             try {
                 filiereClient.getFiliere(filiereId);
                 niveauClient.getNiveau(niveauId);
                 domaineClient.getDomaine(domaineId);
             } catch (Exception e) {
-                throw new RuntimeException("Filière ou niveau introuvable");
+                throw new RuntimeException("Filière ou niveau ou domaine introuvable");
             }
 
-            System.out.println("userId = " + userId);
-            System.out.println("filiereId = " + filiereId);
-            System.out.println("niveauId = " + niveauId);
-            System.out.println("domaineId = " + domaineId);
 
             return etudiantRepository.save(etudiant);
 
@@ -140,6 +145,7 @@ public class EtudiantService {
                                    String cin,
                                    String adresse,
                                    String phone,
+                                   TypeFormation typeFormation,
                                    MultipartFile photo,
                                    MultipartFile releve,
                                    MultipartFile diplome) {
@@ -150,6 +156,9 @@ public class EtudiantService {
         existing.setCin(cin);
         existing.setAdresse(adresse);
         existing.setPhone(phone);
+        if (typeFormation != null) {
+            existing.setTypeFormation(typeFormation);
+        }
 
         try {
             if (photo != null && !photo.isEmpty()) {
@@ -220,12 +229,15 @@ public class EtudiantService {
         NiveauDto niveau =
                 niveauClient.getNiveau(etudiant.getNiveauId());
 
+        DomaineDto domaine =
+                domaineClient.getDomaine(etudiant.getDomaineId());
 
         return Map.of(
                 "etudiant", etudiant,
                 "user", user,
                 "filiere", filiere,
-                "niveau", niveau
+                "niveau", niveau,
+                "domaine", domaine
         );
     }
 }

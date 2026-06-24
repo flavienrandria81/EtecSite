@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "DOMAINE")
 public interface DomaineClient {
 
-    @GetMapping("/api/domaines")
+    @GetMapping("/api/domaines/{id}")
     DomaineDto getDomaine(@PathVariable Long id);
 }
