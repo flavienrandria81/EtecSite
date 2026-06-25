@@ -10,7 +10,7 @@ public interface EtudiantClient {
 
     @GetMapping("/etudiants/{id}")
     EtudiantResponse getEtudiant(
-            @PathVariable Long id
+            @PathVariable("id") Long id
     );
 
 }

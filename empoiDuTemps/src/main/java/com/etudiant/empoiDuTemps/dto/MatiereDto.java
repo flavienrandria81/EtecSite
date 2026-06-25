@@ -1,4 +1,4 @@
-package com.etudiant.note.Dto;
+package com.etudiant.empoiDuTemps.dto;
 
 import lombok.Data;
 

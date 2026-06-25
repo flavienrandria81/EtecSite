@@ -16,6 +16,6 @@ public class Matiere {
     private Long id;
 
     private String nom;
-    private double coefficient;
+    private Integer coefficient;
 
 }

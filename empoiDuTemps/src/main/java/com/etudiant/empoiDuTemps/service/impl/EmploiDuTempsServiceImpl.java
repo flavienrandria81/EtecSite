@@ -1,8 +1,13 @@
 package com.etudiant.empoiDuTemps.service.impl;
 
+import com.etudiant.empoiDuTemps.client.FiliereClient;
+import com.etudiant.empoiDuTemps.client.MatiereClient;
+import com.etudiant.empoiDuTemps.dto.FiliereDto;
+import com.etudiant.empoiDuTemps.dto.MatiereDto;
 import com.etudiant.empoiDuTemps.entity.EmploiDuTemps;
 import com.etudiant.empoiDuTemps.repository.EmploiDuTempsRepository;
 import com.etudiant.empoiDuTemps.service.EmploiDuTempsService;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +18,31 @@ import org.springframework.stereotype.Service;
 public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
 
     private final EmploiDuTempsRepository repository;
+    private final MatiereClient matiereClient;
+    private final FiliereClient filiereClient;
+
     @Override
     public EmploiDuTemps save(EmploiDuTemps emploiDuTemps) {
+
+        try {
+            MatiereDto matiere = matiereClient.getMiatiere(emploiDuTemps.getMatiereId());
+
+            if (matiere == null) {
+                throw new RuntimeException("Matiere Introuvable");
+            }
+        }catch (FeignException e){
+            throw new RuntimeException("Matière introuvable");
+        }
+
+        try {
+            FiliereDto filiere = filiereClient.getFiliere(emploiDuTemps.getFiliereId());
+
+            if (filiere == null) {
+                throw new RuntimeException("Filière Introuvable");
+            }
+        }catch (FeignException e) {
+            throw new RuntimeException("Matiere Introuvable");
+        }
         return repository.save(emploiDuTemps);
     }
 
@@ -37,7 +65,6 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
         existing.setHeureDebut(emploiDuTemps.getHeureDebut());
         existing.setHeureFin(emploiDuTemps.getHeureFin());
         existing.setAnneesUniversitaire(emploiDuTemps.getAnneesUniversitaire());
-        existing.setSemstre(emploiDuTemps.getSemstre());
 
         return repository.save(existing);
     }

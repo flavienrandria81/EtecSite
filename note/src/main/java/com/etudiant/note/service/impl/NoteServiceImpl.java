@@ -1,6 +1,7 @@
 package com.etudiant.note.service.impl;
 
 import com.etudiant.note.Dto.EtudiantResponse;
+import com.etudiant.note.Dto.MatiereDto;
 import com.etudiant.note.client.EtudiantClient;
 import com.etudiant.note.client.MatiereClient;
 import com.etudiant.note.entity.Note;
@@ -30,13 +31,42 @@ public class NoteServiceImpl implements NoteService {
             if (etudiant == null) {
                 throw new RuntimeException("Etudiant Introuvable");
             }
+        }catch (FeignException e) {
+
+                System.out.println(
+                        "Erreur Feign : "
+                                + e.status()
+                                + " "
+                                + e.getMessage()
+                );
+
+                throw new RuntimeException(
+                        "Etudiant introuvable"
+                );
+            }
+
+        try{
+            MatiereDto matiere =
+                    matiereClient.getMatiere(
+                            note.getMatiereId()
+                    );
+
+
+            if (matiere == null) {
+
+                throw new RuntimeException(
+                        "Matière introuvable"
+                );
+
+            }
+
+            }catch (FeignException e) {
+                throw new RuntimeException("Matiere introuvable");
+            }
 
             return noteRepository.save(note);
-        } catch (FeignException e) {
-            throw new RuntimeException("Etudiant n'existe pas");
-        }
-    }
 
+    }
     @Override
     public Page<Note> findAll(Pageable pageable) {
         return noteRepository.findAll(pageable);
