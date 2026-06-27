@@ -19,7 +19,6 @@ public class Presence {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long etudiantId;
-    private Long enseignantId;
     private Long emploiDuTempsId;
 
     @Enumerated(EnumType.STRING)
