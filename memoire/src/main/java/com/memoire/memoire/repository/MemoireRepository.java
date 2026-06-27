@@ -1,4 +1,4 @@
-package com.memoire.memoire.entity.repository;
+package com.memoire.memoire.repository;
 
 import com.memoire.memoire.entity.Memoire;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.memoire.memoire.service.impl;
 
 import com.memoire.memoire.entity.Memoire;
-import com.memoire.memoire.entity.repository.MemoireRepository;
+import com.memoire.memoire.repository.MemoireRepository;
 import com.memoire.memoire.service.MemoireService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
