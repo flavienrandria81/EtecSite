@@ -1,11 +1,11 @@
 package com.etudiant.note.service;
 
-import com.etudiant.note.Dto.EtudiantNoteResponse;
 import com.etudiant.note.entity.Note;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface NoteService {
     Note save(Note note);
@@ -15,4 +15,5 @@ public interface NoteService {
     void delete(Long id);
     List<Note> getByEtudiant(Long etudiantId);
     Double calculerMoyenne(Long etudiantId);
+    Map<String, Object> getNoteComplet(Long id);
 }

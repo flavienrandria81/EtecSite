@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notes")
@@ -57,6 +58,11 @@ public class NoteController {
 
         return ResponseEntity.ok(
                 noteService.calculerMoyenne(etudiantId));
+    }
+
+    @GetMapping("/complet/{id}")
+    public Map<String, Object> getComplet(@PathVariable Long id) {
+        return noteService.getNoteComplet(id);
     }
 
 }

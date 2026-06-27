@@ -34,6 +34,9 @@
     <module>niveau</module>
     <module>filiere</module>
     <module>domaine</module>
+    <module>memoire</module>
+    <module>admin</module>
+    <module>semestre</module>
   </modules>
 
   <properties>

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -104,5 +105,30 @@ public class NoteServiceImpl implements NoteService {
         Double moyenne = noteRepository.calculerMoyenne(etudiantId);
 
         return moyenne != null ? moyenne : 0.0;
+    }
+
+    @Override
+    public Map<String, Object> getNoteComplet(Long id) {
+
+
+        Note note = findById(id);
+
+
+        EtudiantResponse etudiant =
+                etudiantClient.getEtudiant(
+                        note.getEtudiantId()
+                );
+
+
+        MatiereDto matiere =
+                matiereClient.getMatiere(
+                        note.getMatiereId()
+                );
+
+
+      return Map.of(
+                "etudiant", etudiant,
+                "matiere", matiere
+        );
     }
 }

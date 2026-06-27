@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/emploiDuTemps")
 @RequiredArgsConstructor
@@ -40,6 +42,11 @@ public class EmploiDuTempsController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/complet/{id}")
+    public Map<String, Object> getComplet(@PathVariable Long id) {
+        return service.getNoteComplet(id);
     }
 
 }

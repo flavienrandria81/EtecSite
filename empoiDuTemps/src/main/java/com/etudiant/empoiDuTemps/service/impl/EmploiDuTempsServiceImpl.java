@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
@@ -23,6 +25,10 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
 
     @Override
     public EmploiDuTemps save(EmploiDuTemps emploiDuTemps) {
+
+        System.out.println("Jours = " + emploiDuTemps.getJours());
+        System.out.println("Année = " + emploiDuTemps.getAnneesUniversitaire());
+        System.out.println("Objet reçu : " + emploiDuTemps);
 
         try {
             MatiereDto matiere = matiereClient.getMiatiere(emploiDuTemps.getMatiereId());
@@ -43,6 +49,7 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
         }catch (FeignException e) {
             throw new RuntimeException("Matiere Introuvable");
         }
+
         return repository.save(emploiDuTemps);
     }
 
@@ -72,5 +79,28 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
     @Override
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Map<String, Object> getNoteComplet(Long id) {
+        EmploiDuTemps emploiDuTemps = finById(id);
+
+
+        FiliereDto filiere =
+                filiereClient.getFiliere(
+                        emploiDuTemps.getFiliereId()
+                );
+
+
+        MatiereDto matiere =
+                matiereClient.getMiatiere(
+                        emploiDuTemps.getMatiereId()
+                );
+
+
+        return Map.of(
+                "filiere", filiere,
+                "matiere", matiere
+        );
     }
 }
