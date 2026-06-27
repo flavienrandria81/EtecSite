@@ -20,12 +20,12 @@ public class EmploiDuTemps {
     private Long id;
     private Long filiereId;
     private Long matiereId;
-    private Long semestreId;
+    private Long enseignantId;
     private LocalDate date;
     private LocalTime heureDebut;
     private LocalTime heureFin;
     private String jours;
-    private String anneesUniversitaire;
+    private String salle;
 
 
 }

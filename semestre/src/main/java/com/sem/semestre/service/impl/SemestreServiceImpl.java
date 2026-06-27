@@ -1,9 +1,7 @@
 package com.sem.semestre.service.impl;
 
-import com.sem.semestre.client.MatiereClient;
 import com.sem.semestre.client.UniversitaireClient;
 import com.sem.semestre.dto.AnneesUnivDto;
-import com.sem.semestre.dto.MatiereDto;
 import com.sem.semestre.entity.Semestre;
 import com.sem.semestre.repository.SemestreRepository;
 import com.sem.semestre.service.SemestreService;
@@ -19,7 +17,6 @@ public class SemestreServiceImpl implements SemestreService {
 
     private final SemestreRepository repository;
     private final UniversitaireClient universitaireClient;
-    private final MatiereClient matiereClient;
     @Override
     public Semestre save(Semestre semestre) {
 
@@ -57,26 +54,8 @@ public class SemestreServiceImpl implements SemestreService {
             throw new RuntimeException("Années Universitaire introuvable");
         }
 
-        try{
-            MatiereDto matiere =
-                    matiereClient.getMatiere(
-                            semestre.getMatiereId()
-                    );
-
-
-            if (matiere == null) {
-
-                throw new RuntimeException(
-                        "Matière introuvable"
-                );
-
-            }
-
-        }catch (FeignException e) {
-            throw new RuntimeException("Matière introuvable");
-}
         return repository.save(semestre);
-                }
+    }
 
 @Override
     public Page<Semestre> findAll(Pageable pageable) {

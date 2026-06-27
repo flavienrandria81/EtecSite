@@ -1,7 +1,9 @@
 package com.etudiant.empoiDuTemps.service.impl;
 
+import com.etudiant.empoiDuTemps.client.EnseignantClient;
 import com.etudiant.empoiDuTemps.client.FiliereClient;
 import com.etudiant.empoiDuTemps.client.MatiereClient;
+import com.etudiant.empoiDuTemps.dto.EnseignantDto;
 import com.etudiant.empoiDuTemps.dto.FiliereDto;
 import com.etudiant.empoiDuTemps.dto.MatiereDto;
 import com.etudiant.empoiDuTemps.entity.EmploiDuTemps;
@@ -22,13 +24,11 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
     private final EmploiDuTempsRepository repository;
     private final MatiereClient matiereClient;
     private final FiliereClient filiereClient;
+    private final EnseignantClient enseignantClient;
 
     @Override
     public EmploiDuTemps save(EmploiDuTemps emploiDuTemps) {
 
-        System.out.println("Jours = " + emploiDuTemps.getJours());
-        System.out.println("Année = " + emploiDuTemps.getAnneesUniversitaire());
-        System.out.println("Objet reçu : " + emploiDuTemps);
 
         try {
             MatiereDto matiere = matiereClient.getMiatiere(emploiDuTemps.getMatiereId());
@@ -48,6 +48,16 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
             }
         }catch (FeignException e) {
             throw new RuntimeException("Matiere Introuvable");
+        }
+
+        try {
+            EnseignantDto enseignant = enseignantClient.getEnseignant(emploiDuTemps.getEnseignantId());
+
+            if (enseignant == null) {
+                throw new RuntimeException("Enseignant Introuvable");
+            }
+        }catch (FeignException e) {
+            throw new RuntimeException("Enseignant Introuvable");
         }
 
         return repository.save(emploiDuTemps);
@@ -71,7 +81,6 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
         existing.setDate(emploiDuTemps.getDate());
         existing.setHeureDebut(emploiDuTemps.getHeureDebut());
         existing.setHeureFin(emploiDuTemps.getHeureFin());
-        existing.setAnneesUniversitaire(emploiDuTemps.getAnneesUniversitaire());
 
         return repository.save(existing);
     }
