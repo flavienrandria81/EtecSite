@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface SemestreRepository extends JpaRepository<Semestre, Long> {
     Optional<Semestre> findByActifTrue();
-    boolean existsByNumeroAndAnneeUniversitaireId(Integer numero, Long anneeUniversitaireId);
+    boolean existsByNumeroAndAnneeUniversitaireId(Integer numero, Long anneeUnivId);
 
 }

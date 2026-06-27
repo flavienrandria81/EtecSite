@@ -19,6 +19,20 @@ public class SemestreServiceImpl implements SemestreService {
     private final UniversitaireClient universitaireClient;
     @Override
     public Semestre save(Semestre semestre) {
+
+        boolean existe = repository
+                .existsByNumeroAndAnneeUniversitaireId(
+                        semestre.getNumero(),
+                        semestre.getAnneesUnivId()
+                );
+
+
+        if (existe) {
+            throw new RuntimeException(
+                    "Ce semestre existe déjà pour cette année universitaire"
+            );
+        }
+
         semestre.setActif(false);
 
         try{
