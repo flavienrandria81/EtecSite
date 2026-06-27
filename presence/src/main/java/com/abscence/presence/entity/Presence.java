@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -15,9 +18,13 @@ public class Presence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long etudiantId;
+    private Long enseignantId;
+    private Long emploiDuTempsId;
 
-    private String nom;
-    private String prenom;
-    private String matricule;
-    private String signature;
+    @Enumerated(EnumType.STRING)
+    private StatutPresence statut;
+
+    private String remarque;
+
 }

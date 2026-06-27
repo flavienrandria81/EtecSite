@@ -18,7 +18,6 @@ public class Semestre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long anneesUnivId;
-    private Long matiereId;
     private String nom;
     private Integer numero;
     private LocalDate dateDebut;

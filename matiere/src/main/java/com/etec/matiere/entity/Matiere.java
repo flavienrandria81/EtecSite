@@ -14,7 +14,7 @@ public class Matiere {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long semestreId;
     private String nom;
     private Integer coefficient;
 
