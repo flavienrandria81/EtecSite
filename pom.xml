@@ -39,6 +39,8 @@
     <module>semestre</module>
     <module>univesitaire</module>
     <module>email</module>
+    <module>notification</module>
+    <module>common</module>
   </modules>
 
   <properties>

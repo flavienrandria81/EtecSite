@@ -84,6 +84,12 @@ public class EtudiantService {
 
             // récupérer userId depuis JwtFilter
             Long userId = (Long) request.getAttribute("userId");
+            System.out.println("========================");
+            System.out.println("Controller -> Service");
+            System.out.println("userId = " + request.getAttribute("userId"));
+            System.out.println("email = " + request.getAttribute("email"));
+            System.out.println("role = " + request.getAttribute("role"));
+            System.out.println("========================");
 
 
             if (userId == null) {

@@ -29,6 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
 
+
         // laisser passer les routes publiques
         if(path.startsWith("/etudiants")
                 || path.startsWith("/api/auth")) {
@@ -69,11 +70,11 @@ public class JwtFilter extends OncePerRequestFilter {
                     request.setAttribute("role", role);
                     request.setAttribute("email", email);
 
-                    /*System.out.println("Authorization = " + authHeader);
+                    System.out.println("Authorization = " + authHeader);
                     System.out.println("JWT = " + jwt);
                     System.out.println("Email = " + email);
                     System.out.println("Role = " + role);
-                    System.out.println("UserId = " + userId);*/
+                    System.out.println("UserId = " + userId);
 
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
