@@ -1,6 +1,6 @@
 package com.note.notification.service;
 
-import com.note.notification.dto.NotificationRequest;
+import com.common.common.dto.NotificationRequest;
 import com.note.notification.entity.Notification;
 import com.note.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
