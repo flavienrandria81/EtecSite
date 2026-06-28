@@ -1,13 +1,7 @@
 package com.example.Etudiant.demo.service;
 
-import com.example.Etudiant.demo.client.DomaineClient;
-import com.example.Etudiant.demo.client.FiliereClient;
-import com.example.Etudiant.demo.client.NiveauClient;
-import com.example.Etudiant.demo.client.UserClient;
-import com.example.Etudiant.demo.dto.DomaineDto;
-import com.example.Etudiant.demo.dto.FiliereDto;
-import com.example.Etudiant.demo.dto.NiveauDto;
-import com.example.Etudiant.demo.dto.UserDto;
+import com.example.Etudiant.demo.client.*;
+import com.example.Etudiant.demo.dto.*;
 import com.example.Etudiant.demo.entity.Etudiant;
 import com.example.Etudiant.demo.entity.TypeFormation;
 import com.example.Etudiant.demo.repository.EtudiantRepository;
@@ -38,6 +32,8 @@ public class EtudiantService {
     private final FiliereClient filiereClient;
     private final NiveauClient niveauClient;
     private final DomaineClient domaineClient;
+    private final EmailClient emailClient;
+    private final QrCodeService qrCodeService;
     private final String UPLOAD_DIR = "upload/";
 
     // CREATE ETUDIANT
@@ -65,11 +61,11 @@ public class EtudiantService {
 
             String releveName = UUID.randomUUID() + "_" + releve.getOriginalFilename();
             Path relevePath = Paths.get(UPLOAD_DIR, releveName);
-            Files.write(relevePath, photo.getBytes());
+            Files.write(relevePath, releve.getBytes());
 
             String diplomeName = UUID.randomUUID() + "_" + diplome.getOriginalFilename();
             Path diplomePath = Paths.get(UPLOAD_DIR, diplomeName);
-            Files.write(diplomePath, photo.getBytes());
+            Files.write(diplomePath, diplome.getBytes());
 
 
 
@@ -112,9 +108,43 @@ public class EtudiantService {
             } catch (Exception e) {
                 throw new RuntimeException("Filière ou niveau ou domaine introuvable");
             }
+// Sauvegarder l'étudiant
+            Etudiant savedEtudiant = etudiantRepository.save(etudiant);
 
+// Récupérer le User
+            UserDto user = userClient.getUserById(savedEtudiant.getUserId());
 
-            return etudiantRepository.save(etudiant);
+// Contenu du QR Code
+            String qrContent =
+                    "Matricule : " + savedEtudiant.getMatricule() +
+                            "\nEtudiant ID : " + savedEtudiant.getId();
+
+// Génération du QR Code
+            byte[] qrCode;
+            try {
+                qrCode = qrCodeService.generateQRCode(qrContent);
+            } catch (Exception e) {
+                throw new RuntimeException("Erreur lors de la génération du QR Code", e);
+            }
+
+// Préparer l'email
+            EmailRequest emailRequest = new EmailRequest();
+            emailRequest.setTo(user.getEmail());
+            emailRequest.setSubject("Bienvenue à l'université");
+            emailRequest.setMessage(
+                    "Bonjour " + user.getUsername() +
+                            "\n\nVotre inscription est terminée." +
+                            "\nVotre matricule est : " + savedEtudiant.getMatricule() +
+                            "\n\nVeuillez trouver votre QR Code en pièce jointe."
+            );
+
+            emailRequest.setAttachment(qrCode);
+            emailRequest.setFileName("QRCode_" + savedEtudiant.getMatricule() + ".png");
+
+// Envoyer l'email
+            emailClient.sendEmail(emailRequest);
+
+            return savedEtudiant;
 
         } catch (IOException e) {
             e.printStackTrace();
