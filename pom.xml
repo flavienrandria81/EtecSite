@@ -41,6 +41,8 @@
     <module>email</module>
     <module>notification</module>
     <module>common</module>
+    <module>profile</module>
+    <module>moyenne</module>
   </modules>
 
   <properties>

@@ -43,7 +43,7 @@ public class EnseignantService {
 
         try {
             File dir = new File(UPLOAD_DIR);
-            if (dir.exists()) {
+            if (!dir.exists()) {
                 dir.mkdirs();
             }
 
