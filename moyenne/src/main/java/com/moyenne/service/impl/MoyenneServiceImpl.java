@@ -1,6 +1,8 @@
 package com.moyenne.service.impl;
 
+import com.common.common.dto.NotificationRequest;
 import com.moyenne.client.NoteClient;
+import com.moyenne.client.NotificationClient;
 import com.moyenne.dto.NoteDto;
 import com.moyenne.entity.Moyenne;
 import com.moyenne.repository.MoyenneRepository;
@@ -18,6 +20,7 @@ public class MoyenneServiceImpl implements MoyenneService {
 
     private final MoyenneRepository moyenneRepository;
     private final NoteClient noteClient;
+    private final NotificationClient notificationClient;
 
     @Override
     public Moyenne calculerMoyenne(Long etudiantId) {
@@ -44,9 +47,28 @@ public class MoyenneServiceImpl implements MoyenneService {
         resultat.setMoyenneGenerale(moyenne);
         resultat.setMention(calculMention(moyenne));
 
-        return moyenneRepository.save(resultat);
-    }
 
+        Moyenne saved = moyenneRepository.save(resultat);
+
+// Création de la notification
+        NotificationRequest request = new NotificationRequest();
+
+        request.setEtudiant(saved.getEtudiantId());
+        request.setUserId(notes.get(0).getUserId());
+
+        request.setTitre("Moyenne calculée");
+
+        request.setMessage(
+                "Votre moyenne générale est de "
+                        + saved.getMoyenneGenerale()
+                        + " (" + saved.getMention() + ")."
+        );
+
+        notificationClient.envoyer(request);
+
+        return saved;
+    }
+    
     @Override
     public Page<Moyenne> findAll(Pageable pageable) {
         return moyenneRepository.findAll(pageable);

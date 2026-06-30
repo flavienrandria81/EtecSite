@@ -14,6 +14,5 @@ public interface NoteService {
     Note update(Long id, Note note);
     void delete(Long id);
     List<Note> getByEtudiant(Long etudiantId);
-    Double calculerMoyenne(Long etudiantId);
     Map<String, Object> getNoteComplet(Long id);
 }

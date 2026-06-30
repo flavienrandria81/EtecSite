@@ -205,14 +205,6 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Double calculerMoyenne(Long etudiantId) {
-
-        Double moyenne = noteRepository.calculerMoyenne(etudiantId);
-
-        return moyenne != null ? moyenne : 0.0;
-    }
-
-    @Override
     public Map<String, Object> getNoteComplet(Long id) {
 
 

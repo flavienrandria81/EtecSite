@@ -52,14 +52,6 @@ public class NoteController {
                 noteService.getByEtudiant(etudiantId));
     }
 
-    @GetMapping("/moyenne/{etudiantId}")
-    public ResponseEntity<Double> moyenne(
-            @PathVariable Long etudiantId) {
-
-        return ResponseEntity.ok(
-                noteService.calculerMoyenne(etudiantId));
-    }
-
     @GetMapping("/complet/{id}")
     public Map<String, Object> getComplet(@PathVariable Long id) {
         return noteService.getNoteComplet(id);
