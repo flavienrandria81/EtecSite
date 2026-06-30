@@ -2,8 +2,10 @@ package com.abscence.presence.service.impl;
 
 import com.abscence.presence.client.EmploiDuTempsClient;
 import com.abscence.presence.client.EtudiantClient;
+import com.abscence.presence.client.UserClient;
 import com.abscence.presence.dto.EmploiDuTempsDto;
 import com.abscence.presence.dto.EtudiantDto;
+import com.abscence.presence.dto.UserDto;
 import com.abscence.presence.entity.Presence;
 import com.abscence.presence.repository.PresenceRepository;
 import com.abscence.presence.service.PresenceService;
@@ -20,6 +22,7 @@ public class PresenceServiceImpl implements PresenceService {
     private final PresenceRepository repository;
     private final EtudiantClient etudiantClient;
     private final EmploiDuTempsClient emploiDuTempsClient;
+    private final UserClient userClient;
     @Override
     public Presence save(Presence presence) {
 
@@ -40,6 +43,25 @@ public class PresenceServiceImpl implements PresenceService {
 
         }catch (FeignException e) {
             throw new RuntimeException("Etudiant introuvable");
+        }
+
+        try{
+            UserDto user =
+                    userClient.getUser(
+                            presence.getUserId()
+                    );
+
+
+            if (user == null) {
+
+                throw new RuntimeException(
+                        "Utilidateur introuvable"
+                );
+
+            }
+
+        }catch (FeignException e) {
+            throw new RuntimeException("Utilisateur introuvable");
         }
 
         try{
