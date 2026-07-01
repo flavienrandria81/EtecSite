@@ -1,7 +1,7 @@
-package com.example.Encadreur.demo.Service;
+package com.example.Encadreur.demo.service;
 
-import com.example.Encadreur.demo.Entity.Encadreur;
-import com.example.Encadreur.demo.Repository.EncadreurRepository;
+import com.example.Encadreur.demo.entity.Encadreur;
+import com.example.Encadreur.demo.repository.EncadreurRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

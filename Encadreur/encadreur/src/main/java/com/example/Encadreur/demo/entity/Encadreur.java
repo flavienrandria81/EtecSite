@@ -1,4 +1,4 @@
-package com.example.Encadreur.demo.Entity;
+package com.example.Encadreur.demo.entity;
 
 
 import jakarta.persistence.*;

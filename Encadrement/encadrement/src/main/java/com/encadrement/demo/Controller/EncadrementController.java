@@ -15,7 +15,7 @@ public class EncadrementController {
 
     private final EncadrementService service;
 
-    @PostMapping
+    @PostMapping("/save")
     public Encadrement save(@RequestBody Encadrement encadrement) {
         return service.save(encadrement);
     }

@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,33 @@ public class UserController {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
+
+    @PostMapping("/register_admin")
+    public ResponseEntity<?> registerAdmin(@RequestBody User adminUser) {
+
+        // 1. Vérifier si l'email existe déjà
+        if (userRepository.findByEmail(adminUser.getEmail()) != null) {
+            return ResponseEntity.badRequest()
+                    .body("Email is already in use");
+        }
+
+        // 2. Sécuriser les rôles acceptés pour éviter l'injection de rôles fantaisistes
+        String role = adminUser.getRole();
+        if (!"SUPER_ADMIN".equals(role) && !"ADMIN".equals(role) && !"PEDAGOGIQUE_ADMIN".equals(role)) {
+            return ResponseEntity.badRequest()
+                    .body("Invalid administrative role provided");
+        }
+
+        // 3. Encoder le mot de passe reçu en clair depuis l'Admin Service
+        adminUser.setPassword(
+                passwordEncoder.encode(adminUser.getPassword())
+        );
+
+        // 4. Sauvegarder l'administrateur dans la table 'users'
+        User savedAdmin = userRepository.save(adminUser);
+
+        return ResponseEntity.ok(savedAdmin);
+    }
     @PostMapping("/registration")
     public ResponseEntity<?> register(@RequestBody User user) {
 

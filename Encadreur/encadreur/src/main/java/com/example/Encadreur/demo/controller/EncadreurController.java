@@ -1,7 +1,7 @@
-package com.example.Encadreur.demo.Controller;
+package com.example.Encadreur.demo.controller;
 
-import com.example.Encadreur.demo.Entity.Encadreur;
-import com.example.Encadreur.demo.Service.EncadreurService;
+import com.example.Encadreur.demo.entity.Encadreur;
+import com.example.Encadreur.demo.service.EncadreurService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
