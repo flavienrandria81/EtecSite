@@ -1,49 +1,114 @@
 package com.encadrement.demo.Service;
 
 import com.encadrement.demo.Entity.Encadrement;
+import com.encadrement.demo.Entity.StatutEncadrement;
 import com.encadrement.demo.Repository.EncadrementRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.encadrement.demo.client.EnseignantClient;
+import com.encadrement.demo.client.MemoireClient;
+import com.encadrement.demo.dto.EnseignantDto;
+import com.encadrement.demo.dto.MemoireDto;
+import feign.FeignException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class EncadrementService {
 
-    @Autowired
-    private EncadrementRepository encadrementRepository;
+    private final EncadrementRepository repository;
+    private final MemoireClient memoireClient;
+    private final EnseignantClient enseignantClient;
 
-    // Récupérer tous les encadrements
-    public List<Encadrement> getAllEncadrements() {
-        return encadrementRepository.findAll();
+    public Encadrement save(Encadrement encadrement) {
+
+        // Vérifier le mémoire
+        try {
+            MemoireDto memoire = memoireClient.getMemoire(encadrement.getMemoireId());
+
+            if (memoire == null) {
+                throw new RuntimeException("Mémoire introuvable");
+            }
+
+        } catch (FeignException e) {
+            throw new RuntimeException("Mémoire introuvable");
+        }
+
+        // Vérifier l'enseignant
+        try {
+            EnseignantDto enseignant = enseignantClient.getEnseignant(encadrement.getEnseignantId());
+
+            if (enseignant == null) {
+                throw new RuntimeException("Enseignant introuvable");
+            }
+
+        } catch (FeignException e) {
+            throw new RuntimeException("Enseignant introuvable");
+        }
+
+        if (encadrement.getStatut() == null) {
+            encadrement.setStatut(StatutEncadrement.EN_COURS);
+        }
+
+        return repository.save(encadrement);
     }
 
-    // Récupérer un encadrement par son ID
-    public Optional<Encadrement> getEncadrementById(Long id) {
-        return encadrementRepository.findById(id);
+    public Encadrement update(Long id, Encadrement encadrement) {
+
+        Encadrement existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Encadrement introuvable"));
+
+        // Vérifier le mémoire
+        try {
+            MemoireDto memoire = memoireClient.getMemoire(encadrement.getMemoireId());
+
+            if (memoire == null) {
+                throw new RuntimeException("Mémoire introuvable");
+            }
+
+        } catch (FeignException e) {
+            throw new RuntimeException("Mémoire introuvable");
+        }
+
+        // Vérifier l'enseignant
+        try {
+            EnseignantDto enseignant = enseignantClient.getEnseignant(encadrement.getEnseignantId());
+
+            if (enseignant == null) {
+                throw new RuntimeException("Enseignant introuvable");
+            }
+
+        } catch (FeignException e) {
+            throw new RuntimeException("Enseignant introuvable");
+        }
+
+        existing.setMemoireId(encadrement.getMemoireId());
+        existing.setEnseignantId(encadrement.getEnseignantId());
+        existing.setDateDebut(encadrement.getDateDebut());
+        existing.setDateFin(encadrement.getDateFin());
+        existing.setStatut(encadrement.getStatut());
+        existing.setObservation(encadrement.getObservation());
+
+        return repository.save(existing);
     }
 
-    // Créer un nouvel encadrement
-    public Encadrement createEncadrement(Encadrement encadrement) {
-        return encadrementRepository.save(encadrement);
+    public Encadrement findById(Long id) {
+
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Encadrement introuvable"));
     }
 
-    // Mettre à jour un encadrement
-    public Encadrement updateEncadrement(Long id, Encadrement encadrementDetails) {
-        Encadrement encadrement = encadrementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Encadrement non trouvé avec l'id: " + id));
+    public Page<Encadrement> findAll(Pageable pageable) {
 
-        encadrement.setDescription(encadrementDetails.getDescription());
-        encadrement.setTheme(encadrementDetails.getTheme());
-
-        return encadrementRepository.save(encadrement);
+        return repository.findAll(pageable);
     }
 
-    // Supprimer un encadrement
-    public void deleteEncadrement(Long id) {
-        Encadrement encadrement = encadrementRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Encadrement non trouvé avec l'id: " + id));
-        encadrementRepository.delete(encadrement);
-    }
+    public void delete(Long id) {
 
+        Encadrement existing = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Encadrement introuvable"));
+
+        repository.delete(existing);
+    }
 }

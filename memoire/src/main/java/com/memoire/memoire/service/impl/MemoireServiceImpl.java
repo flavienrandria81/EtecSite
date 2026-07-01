@@ -1,8 +1,10 @@
 package com.memoire.memoire.service.impl;
 
 import com.common.common.dto.NotificationRequest;
+import com.memoire.memoire.FilieresClient;
 import com.memoire.memoire.client.*;
 import com.memoire.memoire.entity.Memoire;
+import com.memoire.memoire.entity.StatutMemoire;
 import com.memoire.memoire.repository.MemoireRepository;
 import com.memoire.memoire.service.MemoireService;
 import lombok.RequiredArgsConstructor;
@@ -28,20 +30,30 @@ public class MemoireServiceImpl implements MemoireService {
     private final UserClient userClient;
     private final NoteClient noteClient;
     private final EnseignantClient enseignantClient;
+    private final FilieresClient filieresClient;
+    private final NiveauClient niveauClient;
+    private final DomaineClient domaineClient;
     private final String UPLOAD_DIR = "/upload";
     @Override
     public Memoire save(Long etudiantId,
                         Long userId,
                         Long noteId,
                         Long enseignantId,
+                        Long filiereId,
+                        Long niveauId,
+                        Long domaineId,
                         String theme,
                         String description,
+                        StatutMemoire statutMemoire,
                         MultipartFile file) {
 
         etudiantClient.findById(etudiantId);
         userClient.findById(userId);
         noteClient.findById(noteId);
-        etudiantClient.findById(enseignantId);
+        enseignantClient.findById(enseignantId);
+        filieresClient.getFiliere(filiereId);
+        niveauClient.getNiveau(niveauId);
+        domaineClient.getDomaine(domaineId);
 
 
         try {
@@ -61,6 +73,7 @@ public class MemoireServiceImpl implements MemoireService {
             memoire.setEnsignantId(enseignantId);
             memoire.setTheme(theme);
             memoire.setDescription(description);
+            memoire.setStatut(statutMemoire);
             memoire.setLivre(livrename);
 
 
@@ -97,11 +110,12 @@ public class MemoireServiceImpl implements MemoireService {
     }
 
     @Override
-    public Memoire update(Long id, String theme, String description, MultipartFile file) {
+    public Memoire update(Long id, String theme, String description, StatutMemoire statutMemoire, MultipartFile file) {
         Memoire existing = findById(id);
 
         existing.setTheme(theme);
         existing.setDescription(description);
+        existing.setStatut(statutMemoire.BROUILLON);
 
         try {
             if (file !=  null && !file.isEmpty()) {

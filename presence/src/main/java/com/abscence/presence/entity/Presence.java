@@ -21,7 +21,8 @@ public class Presence {
     private Long etudiantId;
     private Long userId;
     private Long emploiDuTempsId;
-
+    private LocalDate datePresence;
+    private LocalTime heurePresence;
     @Enumerated(EnumType.STRING)
     private StatutPresence statut;
 

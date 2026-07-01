@@ -18,6 +18,9 @@ public class Note {
     private Long id;
 
     private Long etudiantId;
+    private Long enseignantId;
+    private Long semestreId;
+    private Long anneesUnivId;
     private Long matiereId;
     private Long userId;
     private Long filiereId;

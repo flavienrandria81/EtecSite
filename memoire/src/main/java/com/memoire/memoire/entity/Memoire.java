@@ -1,9 +1,6 @@
 package com.memoire.memoire.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +18,13 @@ public class Memoire {
     private Long userId;
     private Long noteId;
     private Long ensignantId;
+    private Long filiereId;
+    private Long niveauId;
+    private Long domaineId;
     private String theme;
     private String description;
     private String livre;
+
+    @Enumerated(EnumType.STRING)
+    private StatutMemoire statut;
 }

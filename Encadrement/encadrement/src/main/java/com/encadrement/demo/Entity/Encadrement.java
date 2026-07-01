@@ -2,24 +2,35 @@ package com.encadrement.demo.Entity;
 
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Entity
-@Table(name="encadrement")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Encadrement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_encadrement;
-    /*private String id_encadreur;
-    private String id_filier;
-    private String id_etudiant;*/
-    private String theme;
-    private String description;
+    private Long id;
 
-    public Encadrement(){
+    private Long etudiantId;
+    private Long enseignantId;
+    private Long memoireId;
+    private String sujet;
+    private String anneeUniversitaire;
+    private LocalDate dateDebut;
+    private LocalDate dateFin;
 
-    }
+    @Enumerated(EnumType.STRING)
+    private StatutEncadrement statut;
 
+    @Column(length = 1000)
+    private String observation;
 }

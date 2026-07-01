@@ -2,48 +2,42 @@ package com.encadrement.demo.Controller;
 
 import com.encadrement.demo.Entity.Encadrement;
 import com.encadrement.demo.Service.EncadrementService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 @RestController
-@RequestMapping("/api/Encadrements")
+@RequestMapping("/api/encadrements")
+@RequiredArgsConstructor
+@CrossOrigin("*")
 public class EncadrementController {
 
-    @Autowired
-    private EncadrementService encadrementService;
-
-    @GetMapping
-    public ResponseEntity<List<Encadrement>> getAllEncadrements() {
-        List<Encadrement> encadrements = encadrementService.getAllEncadrements();
-        return ResponseEntity.ok(encadrements);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Encadrement> getEncadrementById(@PathVariable Long id) {
-        Optional<Encadrement> encadrement = encadrementService.getEncadrementById(id);
-        return encadrement.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
-    }
+    private final EncadrementService service;
 
     @PostMapping
-    public ResponseEntity<Encadrement> createEncadrement(@RequestBody Encadrement encadrement) {
-        Encadrement savedEncadrement = encadrementService.createEncadrement(encadrement);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEncadrement);
+    public Encadrement save(@RequestBody Encadrement encadrement) {
+        return service.save(encadrement);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Encadrement> updateEncadrement(@PathVariable Long id, @RequestBody Encadrement encadrement) {
-        Encadrement updatedEncadrement = encadrementService.updateEncadrement(id, encadrement);
-        return ResponseEntity.ok(updatedEncadrement);
+    public Encadrement update(@PathVariable Long id,
+                              @RequestBody Encadrement encadrement) {
+        return service.update(id, encadrement);
+    }
+
+    @GetMapping("/{id}")
+    public Encadrement findById(@PathVariable Long id) {
+        return service.findById(id);
+    }
+
+    @GetMapping
+    public Page<Encadrement> findAll(Pageable pageable) {
+        return service.findAll(pageable);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEncadrement(@PathVariable Long id) {
-        encadrementService.deleteEncadrement(id);
-        return ResponseEntity.noContent().build();
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 }

@@ -1,13 +1,7 @@
 package com.etudiant.empoiDuTemps.service.impl;
 
-import com.etudiant.empoiDuTemps.client.EnseignantClient;
-import com.etudiant.empoiDuTemps.client.FiliereClient;
-import com.etudiant.empoiDuTemps.client.MatiereClient;
-import com.etudiant.empoiDuTemps.client.SemestreClient;
-import com.etudiant.empoiDuTemps.dto.EnseignantDto;
-import com.etudiant.empoiDuTemps.dto.FiliereDto;
-import com.etudiant.empoiDuTemps.dto.MatiereDto;
-import com.etudiant.empoiDuTemps.dto.SemestreDto;
+import com.etudiant.empoiDuTemps.client.*;
+import com.etudiant.empoiDuTemps.dto.*;
 import com.etudiant.empoiDuTemps.entity.EmploiDuTemps;
 import com.etudiant.empoiDuTemps.repository.EmploiDuTempsRepository;
 import com.etudiant.empoiDuTemps.service.EmploiDuTempsService;
@@ -28,6 +22,7 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
     private final FiliereClient filiereClient;
     private final EnseignantClient enseignantClient;
     private final SemestreClient semestreClient;
+    private final NiveauClient niveauClient;
 
     @Override
     public EmploiDuTemps save(EmploiDuTemps emploiDuTemps) {
@@ -61,6 +56,16 @@ public class EmploiDuTempsServiceImpl implements EmploiDuTempsService {
             }
         }catch (FeignException e) {
             throw new RuntimeException("Enseignant Introuvable");
+        }
+
+        try {
+            NiveauDto niveau = niveauClient.getNiveau(emploiDuTemps.getNiveauId());
+
+            if (niveau == null) {
+                throw new RuntimeException("Niveau Introuvable");
+            }
+        }catch (FeignException e) {
+            throw new RuntimeException("Niveau Introuvable");
         }
 
         try {

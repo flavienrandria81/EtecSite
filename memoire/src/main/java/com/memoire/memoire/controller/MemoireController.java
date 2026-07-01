@@ -1,6 +1,7 @@
 package com.memoire.memoire.controller;
 
 import com.memoire.memoire.entity.Memoire;
+import com.memoire.memoire.entity.StatutMemoire;
 import com.memoire.memoire.service.MemoireService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,11 +24,25 @@ public class MemoireController {
             @RequestParam Long userId,
             @RequestParam Long noteId,
             @RequestParam Long enseignantId,
+            @RequestParam Long filiereId,
+            @RequestParam Long niveauId,
+            @RequestParam Long domaineId,
             @RequestParam String theme,
             @RequestParam String description,
+            @RequestParam StatutMemoire statutMemoire,
             @RequestParam("livre")MultipartFile livre
             ) {
-        return service.save(etudiantId, userId, noteId, enseignantId,theme, description, livre);
+        return service.save(etudiantId,
+                userId,
+                noteId,
+                enseignantId,
+                filiereId,
+                niveauId,
+                domaineId,
+                theme,
+                description,
+                statutMemoire,
+                livre);
     }
 
     @GetMapping
@@ -45,9 +60,10 @@ public class MemoireController {
             @PathVariable Long id,
             @RequestParam String theme,
             @RequestParam String description,
+            @RequestParam StatutMemoire statutMemoire,
             @RequestParam(value = "livre", required = false) MultipartFile livre
     ) {
-        return service.update(id, theme, description, livre);
+        return service.update(id, theme, description, statutMemoire, livre);
     }
 
     public ResponseEntity<String> delete(@PathVariable Long id) {

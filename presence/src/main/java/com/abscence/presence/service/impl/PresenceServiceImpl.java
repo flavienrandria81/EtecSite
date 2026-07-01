@@ -80,7 +80,10 @@ public class PresenceServiceImpl implements PresenceService {
             }
 
         }catch (FeignException e) {
-            throw new RuntimeException("Emploi du temps introuvable");
+            e.printStackTrace();
+            throw new RuntimeException(
+                    "Feign status = " + e.status() + ", réponse = " + e.contentUTF8()
+            );
         }
         return repository.save(presence);
     }

@@ -27,6 +27,9 @@ public class NoteServiceImpl implements NoteService {
     private final FiliereClient filiereClient;
     private final NiveauClient niveauClient;
     private final DomaineClient domaineClient;
+    private final EnseignantClient enseignantClient;
+    private final SemestreClient semestreClient;
+    private final AnneesUnivClient anneesUnivClient;
     @Override
     public Note save(Note note) {
 
@@ -129,6 +132,62 @@ public class NoteServiceImpl implements NoteService {
             throw new RuntimeException("Domaine introuvable");
         }
 
+        try{
+            EnseignantDto enseignant =
+                    enseignantClient.getEnseignant(
+                            note.getEnseignantId()
+                    );
+
+
+            if (enseignant == null) {
+
+                throw new RuntimeException(
+                        "Enseignant introuvable"
+                );
+
+            }
+
+        }catch (FeignException e) {
+            throw new RuntimeException("Enseignant introuvable");
+        }
+
+        try{
+            SemestreDto semestre =
+                    semestreClient.getSemestre(
+                            note.getSemestreId()
+                    );
+
+
+            if (semestre == null) {
+
+                throw new RuntimeException(
+                        "Semestre introuvable"
+                );
+
+            }
+
+        }catch (FeignException e) {
+            throw new RuntimeException("Semestre introuvable");
+        }
+
+        try{
+            AnneesUnivDto annees =
+                    anneesUnivClient.getAnnees(
+                            note.getAnneesUnivId()
+                    );
+
+
+            if (annees == null) {
+
+                throw new RuntimeException(
+                        "Années Universitaire introuvable"
+                );
+
+            }
+
+        }catch (FeignException e) {
+            throw new RuntimeException("Années Universitaire introuvable");
+        }
 
         try{
             MatiereDto matiere =
