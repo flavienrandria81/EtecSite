@@ -5,14 +5,14 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/flavienrandria81/EtecSite.git'
+                git branch: 'master', url: 'https://github.com/flavienrandria81/EtecSite.git'
             }
         }
 
         stage('Build Microservices') {
             steps {
                 dir('etec-parent') {
-                    sh 'mvn clean install -DskipTests'
+                    bat 'mvn clean install -DskipTests'
                 }
             }
         }
@@ -20,7 +20,7 @@ pipeline {
         stage('Test') {
             steps {
                 dir('etec-parent') {
-                    sh 'mvn test'
+                    bat 'mvn test'
                 }
             }
         }
@@ -28,7 +28,7 @@ pipeline {
         stage('Package') {
             steps {
                 dir('etec-parent') {
-                    sh 'mvn package -DskipTests'
+                    bat 'mvn package -DskipTests'
                 }
             }
         }
