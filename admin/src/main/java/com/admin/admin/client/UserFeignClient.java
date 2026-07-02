@@ -1,6 +1,7 @@
 package com.admin.admin.client;
 
 import com.admin.admin.dto.UserRegistrationDTO;
+import com.admin.admin.dto.UserResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
