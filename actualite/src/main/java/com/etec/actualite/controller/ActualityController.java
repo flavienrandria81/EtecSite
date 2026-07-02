@@ -1,6 +1,8 @@
 package com.etec.actualite.controller;
 
 import com.etec.actualite.entity.Actuality;
+import com.etec.actualite.entity.Categorie;
+import com.etec.actualite.entity.Status;
 import com.etec.actualite.service.ActualiteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +23,11 @@ public class ActualityController {
     public Actuality save(
             @RequestParam String titre,
             @RequestParam String description,
+            @RequestParam Status status,
+            @RequestParam Categorie categorie,
             @RequestParam MultipartFile file) {
 
-        return service.save(titre, description, file);
+        return service.save(titre, description, status, categorie, file);
     }
 
     @GetMapping
@@ -41,9 +45,11 @@ public class ActualityController {
             @PathVariable Long id,
             @RequestParam String titre,
             @RequestParam String description,
+            @RequestParam Status status,
+            @RequestParam Categorie categorie,
             @RequestParam MultipartFile file
     ) {
-        return service.update(id, titre, description, file);
+        return service.update(id, titre, description, status, categorie, file);
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,8 @@
 package com.etec.actualite.service.impl;
 
 import com.etec.actualite.entity.Actuality;
+import com.etec.actualite.entity.Categorie;
+import com.etec.actualite.entity.Status;
 import com.etec.actualite.repository.ActualiteRepository;
 import com.etec.actualite.service.ActualiteService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ public class ActualityServiceImpl implements ActualiteService {
     private final String UPLOAD_DIR = "upload/";
 
     @Override
-    public Actuality save(String titre, String description, MultipartFile file) {
+    public Actuality save(String titre, String description, Status status, Categorie categorie, MultipartFile file) {
         try {
             File dir = new File(UPLOAD_DIR);
             if (dir.exists()) {
@@ -38,6 +40,8 @@ public class ActualityServiceImpl implements ActualiteService {
             Actuality actuality = new Actuality();
             actuality.setTitre(titre);
             actuality.setDescription(description);
+            actuality.setStatus(Status.BROUILLON);
+            actuality.setCategorie(categorie.EVENEMENT);
             actuality.setImage(filename);
 
             return repository.save(actuality);
@@ -59,13 +63,20 @@ public class ActualityServiceImpl implements ActualiteService {
     }
 
     @Override
-    public Actuality update(Long id, String titre, String description, MultipartFile file) {
+    public Actuality update(Long id, String titre, String description, Status status, Categorie categorie, MultipartFile file) {
 
         Actuality existing = findById(id);
 
         existing.setTitre(titre);
         existing.setDescription(description);
 
+        if (status != null) {
+            existing.setStatus(status);
+        }
+
+        if (categorie != null) {
+            existing.setCategorie(categorie);
+        }
         try {
             if (file != null && file.isEmpty()) {
                 if (existing.getImage() != null) {

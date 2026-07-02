@@ -19,5 +19,11 @@ public class Actuality {
     private String titre;
     private String image;
     private String description;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @Enumerated(EnumType.STRING)
+    private Categorie categorie;
+
 }
 
