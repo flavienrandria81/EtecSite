@@ -1,20 +1,20 @@
-package com.etec.actualite.config;
+package com.api.actualite.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import java.nio.file.Paths;
+import java.io.File;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Démarre du dossier racine où l'application s'exécute
-        String uploadPath = Paths.get("uploads").toAbsolutePath().toUri().toString();
+        // On cible exactement le même dossier absolu
+        String uploadFolderPath = System.getProperty("user.dir") + File.separator + "uploads";
 
-        // Tout mapping arrivant sur /uploads/** ira chercher dans le dossier physique uploads/
+        // Tout appel sur /uploads/** ira piocher directement dans ce dossier physique
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations(uploadPath);
+                .addResourceLocations("file:" + uploadFolderPath + File.separator);
     }
 }

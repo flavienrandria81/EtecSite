@@ -23,7 +23,9 @@ import java.util.UUID;
 public class ActualityServiceImpl implements ActualiteService {
 
     private final ActualiteRepository repository;
-    private final String UPLOAD_DIR = "upload/";
+
+    // 🎯 On s'assure que le chemin absolu se termine bien par le séparateur de fichier de l'OS (\ ou /)
+    private final String UPLOAD_DIR = System.getProperty("user.dir") + File.separator + "uploads" + File.separator;
 
     @Override
     public Actuality save(String titre, String description, Status status, Categorie categorie, MultipartFile file) {
@@ -33,9 +35,12 @@ public class ActualityServiceImpl implements ActualiteService {
                 dir.mkdirs();
             }
 
-            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path path = Paths.get(UPLOAD_DIR, filename);
-            Files.write(path, file.getBytes());
+            String filename = null;
+            if (file != null && !file.isEmpty()) {
+                filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                Path path = Paths.get(UPLOAD_DIR, filename);
+                Files.write(path, file.getBytes());
+            }
 
             Actuality actuality = new Actuality();
             actuality.setTitre(titre);
@@ -47,7 +52,7 @@ public class ActualityServiceImpl implements ActualiteService {
             return repository.save(actuality);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Erreur de créer cette image");
+            throw new RuntimeException("Erreur lors de la création de l'image");
         }
     }
 
@@ -69,30 +74,31 @@ public class ActualityServiceImpl implements ActualiteService {
 
         existing.setTitre(titre);
         existing.setDescription(description);
+        existing.setCategorie(categorie);
+        existing.setStatus(status);
 
-        if (status != null) {
-            existing.setStatus(status);
-        }
-
-        if (categorie != null) {
-            existing.setCategorie(categorie);
-        }
         try {
-            if (file != null && file.isEmpty()) {
+            // 🎯 CORRECTION : On vérifie que le fichier n'est PAS vide (!file.isEmpty())
+            if (file != null && !file.isEmpty()) {
+
+                // Supprimer l'ancienne image si elle existe physiquement
                 if (existing.getImage() != null) {
                     File old = new File(UPLOAD_DIR + existing.getImage());
-                    if (old.exists()) old.delete();
-
-                    String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-                    Path path = Paths.get(UPLOAD_DIR, filename);
-                    Files.write(path, file.getBytes());
-
-                    existing.setImage(filename);
+                    if (old.exists()) {
+                        old.delete();
+                    }
                 }
+
+                // Sauvegarder la nouvelle image
+                String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                Path path = Paths.get(UPLOAD_DIR, filename);
+                Files.write(path, file.getBytes());
+
+                existing.setImage(filename);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Erreur de modifier cette image");
+            throw new RuntimeException("Erreur lors de la modification de l'image");
         }
         return repository.save(existing);
     }
@@ -104,19 +110,16 @@ public class ActualityServiceImpl implements ActualiteService {
 
         try {
             if (actuality.getImage() != null) {
+                // 🎯 CORRECTION : Le chemin est maintenant propre grâce au File.separator global
                 File file = new File(UPLOAD_DIR + actuality.getImage());
                 if (file.exists()) {
-                    boolean deleted = file.delete();
-
-                    if (!deleted) {
-                        return "Image nom supprimer";
-                    }
+                    file.delete();
                 }
             }
             repository.deleteById(id);
-            return "Actualité supprimer avec succès";
+            return "Actualité supprimée avec succès";
         } catch (Exception e) {
-            return "Erreur lors dela suppression";
+            return "Erreur lors de la suppression";
         }
     }
 }

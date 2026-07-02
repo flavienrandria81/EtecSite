@@ -18,6 +18,7 @@ public class Actuality {
 
     private String titre;
     private String image;
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
     @Enumerated(EnumType.STRING)
     private Status status;
