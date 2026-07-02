@@ -1,5 +1,6 @@
 package com.example.Etudiant.demo.controller;
 
+import com.example.Etudiant.demo.dto.EtudiantRegistrationDTO;
 import com.example.Etudiant.demo.entity.Etudiant;
 import com.example.Etudiant.demo.entity.TypeFormation;
 import com.example.Etudiant.demo.service.EtudiantService;
@@ -21,33 +22,25 @@ public class EtudiantController {
 
     private final EtudiantService etudiantService;
 
-    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public Etudiant create(@RequestParam String matricule,
-                           @RequestParam String cin,
-                           @RequestParam String adresse,
-                           @RequestParam String phone,
-                           @RequestParam TypeFormation typeFormation,
-                           @RequestParam Long filiereId,
-                           @RequestParam Long niveauId,
-                           @RequestParam Long domaineId,
-                           @RequestParam("photo") MultipartFile photo,
-                           @RequestParam("releve") MultipartFile releve,
-                           @RequestParam("diplome") MultipartFile diplome,
-                           HttpServletRequest request) {
 
-        return etudiantService.createEtudiant(
-                matricule,
-                cin,
-                adresse,
-                phone,
-                typeFormation,
-                filiereId,
-                niveauId,
-                domaineId,
+    @PostMapping(value = "/registration", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Etudiant> create(
+            @RequestPart("data") EtudiantRegistrationDTO dto,
+            @RequestPart("photo") MultipartFile photo,
+            @RequestPart("releve") MultipartFile releve,
+            @RequestPart("diplome") MultipartFile diplome,
+            HttpServletRequest request
+    ) {
+
+        Etudiant saved = etudiantService.registerEtudiantComplete(
+                dto,
                 photo,
                 releve,
                 diplome,
-                request);
+                request
+        );
+
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping

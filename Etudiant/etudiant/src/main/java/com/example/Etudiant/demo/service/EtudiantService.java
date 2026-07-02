@@ -34,173 +34,178 @@ public class EtudiantService {
     private final DomaineClient domaineClient;
     private final EmailClient emailClient;
     private final QrCodeService qrCodeService;
+
     private final String UPLOAD_DIR = "upload/";
 
-    // CREATE ETUDIANT
-    public Etudiant createEtudiant(String matricule,
-                                   String cin,
-                                   String adresse,
-                                   String phone,
-                                   TypeFormation typeFormation,
-                                   Long filiereId,
-                                   Long niveauId,
-                                   Long domaineId,
-                                   MultipartFile photo,
-                                   MultipartFile releve,
-                                   MultipartFile diplome,
-                                   HttpServletRequest request) {
+    // =========================
+    // MAIN METHOD (REGISTER FULL)
+    // =========================
+    public Etudiant registerEtudiantComplete(
+            EtudiantRegistrationDTO dto,
+            MultipartFile photo,
+            MultipartFile releve,
+            MultipartFile diplome,
+            HttpServletRequest request
+    ) {
         try {
-            File dir = new File(UPLOAD_DIR);
-            if (dir.exists()) {
-                dir.mkdirs();
+
+            // =========================
+            // 1. VALIDATION
+            // =========================
+            if (etudiantRepository.existsByMatricule(dto.getMatricule())) {
+                throw new RuntimeException("Matricule déjà utilisé");
             }
 
-            String photoName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
-            Path photoPath = Paths.get(UPLOAD_DIR, photoName);
-            Files.write(photoPath, photo.getBytes());
+            if (photo == null || photo.isEmpty()
+                    || releve == null || releve.isEmpty()
+                    || diplome == null || diplome.isEmpty()) {
+                throw new RuntimeException("Tous les fichiers sont obligatoires");
+            }
 
-            String releveName = UUID.randomUUID() + "_" + releve.getOriginalFilename();
-            Path relevePath = Paths.get(UPLOAD_DIR, releveName);
-            Files.write(relevePath, releve.getBytes());
+            // =========================
+            // 2. CREATE USER (MICROSERVICE)
+            // =========================
+            UserRegistrationDTO user = new UserRegistrationDTO();
+            user.setUsername(dto.getUsername());
+            user.setEmail(dto.getEmail());
+            user.setPassword(dto.getPassword());
+            user.setRole("ETUDIANT");
 
-            String diplomeName = UUID.randomUUID() + "_" + diplome.getOriginalFilename();
-            Path diplomePath = Paths.get(UPLOAD_DIR, diplomeName);
-            Files.write(diplomePath, diplome.getBytes());
+            UserDto savedUser = userClient.register(user);
 
+            Long userId = savedUser.getId();
 
+            // =========================
+            // 3. GET USER FROM JWT (OPTIONAL CHECK)
+            // =========================
+            Long tokenUserId = (Long) request.getAttribute("userId");
+            if (tokenUserId != null && !tokenUserId.equals(userId)) {
+                throw new RuntimeException("Utilisateur invalide");
+            }
 
+            // =========================
+            // 4. VERIFY EXTERNAL SERVICES
+            // =========================
+            filiereClient.getFiliere(dto.getFiliereId());
+            niveauClient.getNiveau(dto.getNiveauId());
+            domaineClient.getDomaine(dto.getDomaineId());
+
+            // =========================
+            // 5. UPLOAD FILES
+            // =========================
+            String photoName = saveFile(photo);
+            String releveName = saveFile(releve);
+            String diplomeName = saveFile(diplome);
+
+            // =========================
+            // 6. CREATE ETUDIANT
+            // =========================
             Etudiant etudiant = new Etudiant();
-            if (etudiantRepository.existsByMatricule(matricule)) {
-                throw new RuntimeException("Ce matricule est éxiste déjà");
-            }
-            etudiant.setMatricule(matricule);
-            etudiant.setCin(cin);
-            etudiant.setAdresse(adresse);
-            etudiant.setPhone(phone);
-            etudiant.setTypeFormation(typeFormation);
+            etudiant.setUserId(userId);
+            etudiant.setMatricule(dto.getMatricule());
+            etudiant.setCin(dto.getCin());
+            etudiant.setPhone(dto.getTelephone());
+            etudiant.setAdresse(dto.getAdresse());
+            etudiant.setTypeFormation(dto.getTypeFormation());
+
+            etudiant.setFiliereId(dto.getFiliereId());
+            etudiant.setNiveauId(dto.getNiveauId());
+            etudiant.setDomaineId(dto.getDomaineId());
+
             etudiant.setPhoto(photoName);
             etudiant.setReleve(releveName);
             etudiant.setDiplome(diplomeName);
 
-            // récupérer userId depuis JwtFilter
-            Long userId = (Long) request.getAttribute("userId");
-            System.out.println("========================");
-            System.out.println("Controller -> Service");
-            System.out.println("userId = " + request.getAttribute("userId"));
-            System.out.println("email = " + request.getAttribute("email"));
-            System.out.println("role = " + request.getAttribute("role"));
-            System.out.println("========================");
+            Etudiant saved = etudiantRepository.save(etudiant);
 
+            // =========================
+            // 7. QR CODE GENERATION
+            // =========================
+            String qrContent = "Matricule: " + saved.getMatricule()
+                    + "\nID: " + saved.getId();
 
-            if (userId == null) {
-                throw new RuntimeException("userId introuvable dans le token");
-            }
+            byte[] qrCode = qrCodeService.generateQRCode(qrContent);
+            saved.setQrCode(qrCode);
 
-            // lien User, filiere, niveau ↔ Etudiant
-            etudiant.setUserId(userId);
-            etudiant.setFiliereId(filiereId);
-            etudiant.setNiveauId(niveauId);
-            etudiant.setDomaineId(domaineId);
+            etudiantRepository.save(saved);
 
-            System.out.println("userId = " + userId);
-            System.out.println("filiereId = " + filiereId);
-            System.out.println("niveauId = " + niveauId);
-            System.out.println("domaineId = " + domaineId);
+            // =========================
+            // 8. EMAIL NOTIFICATION
+            // =========================
+            UserDto userDto = userClient.getUserById(userId);
 
-            try {
-                filiereClient.getFiliere(filiereId);
-                niveauClient.getNiveau(niveauId);
-                domaineClient.getDomaine(domaineId);
-            } catch (Exception e) {
-                throw new RuntimeException("Filière ou niveau ou domaine introuvable");
-            }
-// Sauvegarder l'étudiant
-            Etudiant savedEtudiant = etudiantRepository.save(etudiant);
-
-// Récupérer le User
-            UserDto user = userClient.getUserById(savedEtudiant.getUserId());
-
-// Contenu du QR Code
-            String qrContent =
-                    "Matricule : " + savedEtudiant.getMatricule() +
-                            "\nEtudiant ID : " + savedEtudiant.getId();
-
-// Génération du QR Code
-            byte[] qrCode;
-
-            try {
-
-                qrCode =
-                        qrCodeService.generateQRCode(qrContent);
-
-
-                qrCode = qrCodeService.generateQRCode(qrContent);
-
-                savedEtudiant.setQrCode(qrCode);
-
-                etudiantRepository.save(savedEtudiant);
-
-
-            } catch (Exception e) {
-
-                throw new RuntimeException(
-                        "Erreur lors de la génération du QR Code",
-                        e
-                );
-            }
-
-// Préparer l'email
-            EmailRequest emailRequest = new EmailRequest();
-            emailRequest.setTo(user.getEmail());
-            emailRequest.setSubject("Bienvenue à l'université");
-            emailRequest.setMessage(
-                    "Bonjour " + user.getUsername() +
-                            "\n\nVotre inscription est terminée." +
-                            "\nVotre matricule est : " + savedEtudiant.getMatricule() +
-                            "\n\nVeuillez trouver votre QR Code en pièce jointe."
+            EmailRequest email = new EmailRequest();
+            email.setTo(userDto.getEmail());
+            email.setSubject("Bienvenue à l'université");
+            email.setMessage(
+                    "Bonjour " + userDto.getUsername()
+                            + "\nVotre inscription est terminée."
+                            + "\nMatricule: " + saved.getMatricule()
             );
 
-            emailRequest.setAttachment(qrCode);
-            emailRequest.setFileName("QRCode_" + savedEtudiant.getMatricule() + ".png");
+            email.setAttachment(qrCode);
+            email.setFileName("QR_" + saved.getMatricule() + ".png");
 
-// Envoyer l'email
-            emailClient.sendEmail(emailRequest);
+            emailClient.sendEmail(email);
 
-            return savedEtudiant;
+            return saved;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Erreur de créer ces fichiers");
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur inscription étudiant: " + e.getMessage(), e);
+        }
+    }
+
+    // =========================
+    // FILE UPLOAD METHOD
+    // =========================
+    private String saveFile(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("Fichier invalide");
         }
 
+        File dir = new File(UPLOAD_DIR);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path path = Paths.get(UPLOAD_DIR, fileName);
+        Files.write(path, file.getBytes());
+
+        return fileName;
     }
-    // GET ALL ETUDIANTS
+
+    // =========================
+    // READ METHODS
+    // =========================
     public Page<Etudiant> getAllEtudiants(Pageable pageable) {
         return etudiantRepository.findAll(pageable);
     }
 
-    // GET BY ID
     public Etudiant getEtudiantById(Long id) {
         return etudiantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Etudiant introuvable"));
     }
 
-    // GET BY MATRICULE
     public Etudiant getByMatricule(String matricule) {
         return etudiantRepository.findByMatricule(matricule)
                 .orElseThrow(() -> new RuntimeException("Matricule introuvable"));
     }
 
+    // =========================
     // UPDATE ETUDIANT
-    public Etudiant updateEtudiant(Long id,
-                                   String matricule,
-                                   String cin,
-                                   String adresse,
-                                   String phone,
-                                   TypeFormation typeFormation,
-                                   MultipartFile photo,
-                                   MultipartFile releve,
-                                   MultipartFile diplome) {
+    // =========================
+    public Etudiant updateEtudiant(
+            Long id,
+            String matricule,
+            String cin,
+            String adresse,
+            String phone,
+            TypeFormation typeFormation,
+            MultipartFile photo,
+            MultipartFile releve,
+            MultipartFile diplome
+    ) {
 
         Etudiant existing = getEtudiantById(id);
 
@@ -208,88 +213,53 @@ public class EtudiantService {
         existing.setCin(cin);
         existing.setAdresse(adresse);
         existing.setPhone(phone);
+
         if (typeFormation != null) {
             existing.setTypeFormation(typeFormation);
         }
 
         try {
+
             if (photo != null && !photo.isEmpty()) {
-                if (existing.getPhoto() != null) {
-                    File old = new File(UPLOAD_DIR + existing.getPhoto());
-                    if (old.exists()) old.delete();
-
-                    String photoName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
-                    Path path = Paths.get(UPLOAD_DIR, photoName);
-                    Files.write(path, photo.getBytes());
-
-                    existing.setPhoto(photoName);
-                }
+                existing.setPhoto(saveFile(photo));
             }
 
             if (releve != null && !releve.isEmpty()) {
-                if (existing.getReleve() != null) {
-                    File old = new File(UPLOAD_DIR + existing.getReleve());
-                    if (old.exists()) old.delete();
-
-                    String releveName = UUID.randomUUID() + "_" + releve.getOriginalFilename();
-                    Path path = Paths.get(UPLOAD_DIR, releveName);
-                    Files.write(path, releve.getBytes());
-
-                    existing.setReleve(releveName);
-                }
+                existing.setReleve(saveFile(releve));
             }
 
             if (diplome != null && !diplome.isEmpty()) {
-                if (existing.getDiplome() != null) {
-                    File old = new File(UPLOAD_DIR + existing.getDiplome());
-                    if (old.exists()) old.delete();
-
-                    String diplomeName = UUID.randomUUID() + "_" + diplome.getOriginalFilename();
-                    Path path = Paths.get(UPLOAD_DIR, diplomeName);
-                    Files.write(path, diplome.getBytes());
-
-                    existing.setDiplome(diplomeName);
-                }
+                existing.setDiplome(saveFile(diplome));
             }
+
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Erreur de modifier ces fichiers");
+            throw new RuntimeException("Erreur mise à jour fichiers");
         }
 
         return etudiantRepository.save(existing);
     }
 
+    // =========================
     // DELETE ETUDIANT
+    // =========================
     public void deleteEtudiant(Long id) {
-        etudiantRepository.deleteById(id);
+        Etudiant e = getEtudiantById(id);
+        etudiantRepository.delete(e);
     }
 
-    public Map<String,Object> getEtudiantComplet(Long id){
+    // =========================
+    // FULL DETAILS
+    // =========================
+    public Map<String, Object> getEtudiantComplet(Long id) {
 
-        Etudiant etudiant =
-                getEtudiantById(id);
-
-
-        UserDto user =
-                userClient.getUserById(
-                        etudiant.getUserId()
-                );
-
-        FiliereDto filiere =
-                filiereClient.getFiliere(etudiant.getFiliereId());
-
-        NiveauDto niveau =
-                niveauClient.getNiveau(etudiant.getNiveauId());
-
-        DomaineDto domaine =
-                domaineClient.getDomaine(etudiant.getDomaineId());
+        Etudiant etudiant = getEtudiantById(id);
 
         return Map.of(
                 "etudiant", etudiant,
-                "user", user,
-                "filiere", filiere,
-                "niveau", niveau,
-                "domaine", domaine
+                "user", userClient.getUserById(etudiant.getUserId()),
+                "filiere", filiereClient.getFiliere(etudiant.getFiliereId()),
+                "niveau", niveauClient.getNiveau(etudiant.getNiveauId()),
+                "domaine", domaineClient.getDomaine(etudiant.getDomaineId())
         );
     }
 }
