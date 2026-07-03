@@ -1,5 +1,6 @@
 package com.coursenligne.controller;
 
+import com.coursenligne.dto.CoursResponse;
 import com.coursenligne.entity.CoursEnLigne;
 import com.coursenligne.service.CoursEnLigneService;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,10 @@ public class CoursController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/details/{id}")
+    public CoursResponse getCoursDetails(@PathVariable Long id) {
+        return service.getCoursById(id);
     }
 }

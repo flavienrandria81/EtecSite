@@ -1,4 +1,4 @@
-package com.api.actualite.config;
+package com.etec.actualite.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

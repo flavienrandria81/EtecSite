@@ -39,7 +39,16 @@ public class ActualityServiceImpl implements ActualiteService {
             if (file != null && !file.isEmpty()) {
                 filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
                 Path path = Paths.get(UPLOAD_DIR, filename);
+                System.out.println("================================");
+                System.out.println("UPLOAD_DIR = " + UPLOAD_DIR);
+                System.out.println("PATH = " + path.toAbsolutePath());
+                System.out.println("Nom original = " + file.getOriginalFilename());
+                System.out.println("Taille = " + file.getSize());
+
                 Files.write(path, file.getBytes());
+
+                System.out.println("Le fichier existe ? " + Files.exists(path));
+                System.out.println("================================");
             }
 
             Actuality actuality = new Actuality();
@@ -78,10 +87,8 @@ public class ActualityServiceImpl implements ActualiteService {
         existing.setStatus(status);
 
         try {
-            // 🎯 CORRECTION : On vérifie que le fichier n'est PAS vide (!file.isEmpty())
             if (file != null && !file.isEmpty()) {
-
-                // Supprimer l'ancienne image si elle existe physiquement
+                // 1. On supprime l'ancienne image SI elle existe
                 if (existing.getImage() != null) {
                     File old = new File(UPLOAD_DIR + existing.getImage());
                     if (old.exists()) {
@@ -89,7 +96,7 @@ public class ActualityServiceImpl implements ActualiteService {
                     }
                 }
 
-                // Sauvegarder la nouvelle image
+                // 2. On enregistre TOUJOURS la nouvelle image, qu'il y en ait eu une ancienne ou pas !
                 String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
                 Path path = Paths.get(UPLOAD_DIR, filename);
                 Files.write(path, file.getBytes());
@@ -98,8 +105,9 @@ public class ActualityServiceImpl implements ActualiteService {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("Erreur lors de la modification de l'image");
+            throw new RuntimeException("Erreur lors de la modification de l'image : " + e.getMessage());
         }
+
         return repository.save(existing);
     }
 
