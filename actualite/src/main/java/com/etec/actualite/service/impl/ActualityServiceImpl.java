@@ -28,7 +28,7 @@ public class ActualityServiceImpl implements ActualiteService {
     private final String UPLOAD_DIR = System.getProperty("user.dir") + File.separator + "uploads" + File.separator;
 
     @Override
-    public Actuality save(String titre, String description, Status status, Categorie categorie, MultipartFile file) {
+    public Actuality save(String titre, String description, Status status, Categorie categorie, MultipartFile file, Boolean important) {
         try {
             File dir = new File(UPLOAD_DIR);
             if (!dir.exists()) {
@@ -77,7 +77,7 @@ public class ActualityServiceImpl implements ActualiteService {
     }
 
     @Override
-    public Actuality update(Long id, String titre, String description, Status status, Categorie categorie, MultipartFile file) {
+    public Actuality update(Long id, String titre, String description, Status status, Categorie categorie, MultipartFile file, Boolean important) {
 
         Actuality existing = findById(id);
 

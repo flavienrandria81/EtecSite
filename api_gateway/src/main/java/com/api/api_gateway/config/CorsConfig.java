@@ -15,7 +15,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 🎯 Spécifie explicitement l'URL de ton application React
-        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
 
         // Autorise toutes les méthodes (GET, POST, PUT, DELETE, OPTIONS)
         config.addAllowedMethod("*");
@@ -31,4 +31,4 @@ public class CorsConfig {
 
         return new CorsWebFilter(source);
     }
-}
+} 

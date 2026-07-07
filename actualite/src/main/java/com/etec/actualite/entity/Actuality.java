@@ -26,5 +26,7 @@ public class Actuality {
     @Enumerated(EnumType.STRING)
     private Categorie categorie;
 
+    private Boolean important;
+
 }
 
