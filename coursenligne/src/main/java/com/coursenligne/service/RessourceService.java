@@ -1,15 +1,43 @@
 package com.coursenligne.service;
 
-import com.coursenligne.entity.Ressource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import com.coursenligne.entity.Ressource;
+
+import java.util.List;
+
 
 public interface RessourceService {
 
-    Ressource uploadFichier(MultipartFile file, Long chapitreId) throws IOException;
 
-    Page<Ressource> getByChapitre(Long chapitreId, Pageable pageable);
+    // Créer une ressource
+    Ressource creerRessource(Ressource ressource);
+
+
+
+    // Modifier une ressource
+    Ressource modifierRessource(
+            Long id,
+            Ressource ressource
+    );
+
+
+
+    // Récupérer toutes les ressources
+    List<Ressource> getAll();
+
+
+
+    // Récupérer une ressource par id
+    Ressource getById(Long id);
+
+
+
+    // Ressources d'une leçon
+    List<Ressource> getByLeconId(Long leçonId);
+
+
+
+    // Supprimer une ressource
+    void supprimerRessource(Long id);
+
 }

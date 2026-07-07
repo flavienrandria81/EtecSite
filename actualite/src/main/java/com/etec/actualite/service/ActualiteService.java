@@ -11,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public interface ActualiteService {
 
-    Actuality save(String titre, String description, Status status, Categorie categorie, MultipartFile file);
+    Actuality save(String titre, String description, Status status, Categorie categorie, MultipartFile file, Boolean important);
     Page<Actuality> findAll(Pageable pageable);
     Actuality findById(Long id);
-    Actuality update(Long id, String titre, String description, Status status, Categorie categorie, MultipartFile file);
+    Actuality update(Long id, String titre, String description, Status status, Categorie categorie, MultipartFile file, Boolean important);
     String delete(Long id);
 
 }

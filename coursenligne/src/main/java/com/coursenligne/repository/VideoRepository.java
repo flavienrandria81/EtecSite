@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Long> {
     
-    Page<Video> findByLeconId(Long leconId, Pageable pageable);
+    Page<Video> findByLeçonId(Long leconId, Pageable pageable);
 
 }

@@ -1,30 +1,167 @@
 package com.coursenligne.controller;
 
+
 import com.coursenligne.entity.Ressource;
 import com.coursenligne.service.RessourceService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+
+import lombok.RequiredArgsConstructor;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+
+import org.springframework.web.bind.annotation.*;
+
+
+import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/api/ressources")
 @RequiredArgsConstructor
 public class RessourceController {
 
-    private final RessourceService service;
 
-    @PostMapping("/upload/{chapitreId}")
-    public Ressource upload(@RequestParam("file") MultipartFile file,
-                            @PathVariable Long chapitreId) throws IOException {
-        return service.uploadFichier(file, chapitreId);
+
+    private final RessourceService ressourceService;
+
+
+
+
+
+
+    // Créer une ressource
+    @PostMapping
+    public ResponseEntity<Ressource> creerRessource(
+            @RequestBody Ressource ressource
+    ){
+
+
+        Ressource nouvelle =
+                ressourceService.creerRessource(
+                        ressource
+                );
+
+
+        return new ResponseEntity<>(
+                nouvelle,
+                HttpStatus.CREATED
+        );
+
     }
 
-    @GetMapping("/chapitre/{id}")
-    public Page<Ressource> getByChapitre(@PathVariable Long id, Pageable pageable) {
-        return service.getByChapitre(id, pageable);
+
+
+
+
+
+
+
+
+    // Modifier
+    @PutMapping("/{id}")
+    public ResponseEntity<Ressource> modifier(
+            @PathVariable Long id,
+            @RequestBody Ressource ressource
+    ){
+
+
+        return ResponseEntity.ok(
+                ressourceService.modifierRessource(
+                        id,
+                        ressource
+                )
+        );
+
     }
+
+
+
+
+
+
+
+
+
+    // Toutes les ressources
+    @GetMapping
+    public ResponseEntity<List<Ressource>> getAll(){
+
+
+        return ResponseEntity.ok(
+                ressourceService.getAll()
+        );
+
+    }
+
+
+
+
+
+
+
+
+
+    // Une ressource par ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Ressource> getById(
+            @PathVariable Long id
+    ){
+
+
+        return ResponseEntity.ok(
+                ressourceService.getById(id)
+        );
+
+    }
+
+
+
+
+
+
+
+
+
+    // Ressources d'une leçon
+    @GetMapping("/lecon/{leçonId}")
+    public ResponseEntity<List<Ressource>> getByLecon(
+            @PathVariable Long leçonId
+    ){
+
+
+        return ResponseEntity.ok(
+                ressourceService.getByLeconId(
+                        leçonId
+                )
+        );
+
+    }
+
+
+
+
+
+
+
+
+
+    // Supprimer
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> supprimer(
+            @PathVariable Long id
+    ){
+
+
+        ressourceService.supprimerRessource(id);
+
+
+        return ResponseEntity.noContent()
+                .build();
+
+    }
+
 }

@@ -1,20 +1,24 @@
 package com.coursenligne.repository;
 
+
 import com.coursenligne.entity.Ressource;
-import com.coursenligne.entity.TypeRessource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface RessourceRepository extends JpaRepository<Ressource, Long> {
 
-    // récupérer les ressources d'une leçon
-    List<Ressource> findByLeconId(Long leconId);
+@Repository
+public interface RessourceRepository
+        extends JpaRepository<Ressource, Long> {
 
-    // rechercher par type PDF, VIDEO, etc.
-    List<Ressource> findByType(
-            TypeRessource type
-    );
+
+    // Trouver les ressources d'une leçon
+    List<Ressource> findByLeçonId(Long leçonId);
+
+
+
+    // Trouver les ressources par type
+    List<Ressource> findByType(String type);
+
 }

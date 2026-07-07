@@ -25,9 +25,10 @@ public class ActualityController {
             @RequestParam String description,
             @RequestParam Status status,
             @RequestParam Categorie categorie,
+            @RequestParam Boolean important,
             @RequestParam MultipartFile file) {
 
-        return service.save(titre, description, status, categorie, file);
+        return service.save(titre, description, status, categorie, file, important);
     }
 
     @GetMapping
@@ -47,9 +48,10 @@ public class ActualityController {
             @RequestParam String description,
             @RequestParam Status status,
             @RequestParam Categorie categorie,
+            @RequestParam Boolean important,
             @RequestParam(required = false) MultipartFile file
     ) {
-        return service.update(id, titre, description, status, categorie, file);
+        return service.update(id, titre, description, status, categorie, file, important);
     }
 
     @DeleteMapping("/{id}")

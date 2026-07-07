@@ -15,7 +15,6 @@ public class MotsPresident {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nomPresident;
     private String titre;
     private String image;

@@ -12,7 +12,7 @@ public class JwtAuthenticationFilter implements GatewayFilterFactory<JwtAuthenti
 
     @Override
     public GatewayFilter apply(Config config) {
-        return (exchange, chain) -> {
+        return (exchange, chain) -> { 
 
             ServerHttpRequest request = exchange.getRequest();
 

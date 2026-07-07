@@ -1,56 +1,182 @@
 package com.coursenligne.service.impl;
 
-import com.coursenligne.entity.Ressource;
-import com.coursenligne.entity.TypeRessource;
-import com.coursenligne.repository.RessourceRepository;
-import com.coursenligne.service.RessourceService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import com.coursenligne.entity.Leçon;
+import com.coursenligne.entity.Ressource;
+
+import com.coursenligne.repository.LeçonRepository;
+import com.coursenligne.repository.RessourceRepository;
+
+import com.coursenligne.service.RessourceService;
+
+
+import lombok.RequiredArgsConstructor;
+
+
+import org.springframework.stereotype.Service;
+
+
+import java.time.LocalDate;
+import java.util.List;
+
+
 
 @Service
 @RequiredArgsConstructor
-public class RessourceServiceImpl implements RessourceService {
+public class RessourceServiceImpl
+        implements RessourceService {
 
-    private final RessourceRepository repo;
 
-    private final String UPLOAD_DIR = "/uploads/";
 
+    private final RessourceRepository ressourceRepository;
+
+    private final LeçonRepository leçonRepository;
+
+
+
+
+
+
+    // Création ressource
     @Override
-    public Ressource uploadFichier(MultipartFile file, Long chapitreId) throws IOException {
+    public Ressource creerRessource(
+            Ressource ressource) {
 
-        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
 
-        File dir = new File(UPLOAD_DIR);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
 
-        File destination = new File(UPLOAD_DIR + fileName);
-        file.transferTo(destination);
+        Long leçonId =
+                ressource.getLeçon()
+                        .getId();
 
-        Ressource res = new Ressource();
-        res.setTitre(file.getOriginalFilename());
-        res.setUrl("/files/" + fileName);
-        res.setChapitreId(chapitreId);
 
-        // type simple basé sur extension
-        if (file.getContentType().startsWith("video")) {
-            res.setType(TypeRessource.VIDEO);
-        } else {
-            res.setType(TypeRessource.PDF);
-        }
 
-        return repo.save(res);
+        Leçon leçon =
+                leçonRepository.findById(leçonId)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Leçon introuvable"
+                                )
+                        );
+
+
+
+        ressource.setLeçon(leçon);
+
+
+
+        // Date automatique
+        ressource.setDateAjout(
+                LocalDate.now()
+        );
+
+
+
+        return ressourceRepository.save(ressource);
+
     }
 
+
+    
+
+    // Modifier
     @Override
-    public Page<Ressource> getByChapitre(Long chapitreId, Pageable pageable) {
-        return repo.findByChapitreId(chapitreId, pageable);
+    public Ressource modifierRessource(
+            Long id,
+            Ressource ressource) {
+
+
+
+        Ressource ancienne =
+                ressourceRepository.findById(id)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Ressource introuvable"
+                                )
+                        );
+
+
+
+        ancienne.setNom(
+                ressource.getNom()
+        );
+
+
+        ancienne.setUrl(
+                ressource.getUrl()
+        );
+
+
+        ancienne.setTaille(
+                ressource.getTaille()
+        );
+
+
+        ancienne.setType(
+                ressource.getType()
+        );
+
+
+
+        return ressourceRepository.save(ancienne);
+
     }
+
+
+
+    // Toutes les ressources
+    @Override
+    public List<Ressource> getAll() {
+
+
+        return ressourceRepository.findAll();
+
+    }
+
+
+    // Une ressource
+    @Override
+    public Ressource getById(Long id) {
+
+
+        return ressourceRepository.findById(id)
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "Ressource introuvable"
+                        )
+                );
+
+    }
+
+
+
+
+
+    // Ressources d'une leçon
+    @Override
+    public List<Ressource> getByLeconId(
+            Long leçonId) {
+
+
+        return ressourceRepository
+                .findByLeçonId(leçonId);
+
+    }
+
+
+
+
+    // Supprimer
+    @Override
+    public void supprimerRessource(
+            Long id) {
+
+
+        Ressource ressource =
+                getById(id);
+
+
+        ressourceRepository.delete(ressource);
+
+    }
+
 }
