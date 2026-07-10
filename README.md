@@ -1,6 +1,6 @@
 # 🏗️ ETEC University — Backend
 
-**Architecture microservices** de la plateforme universitaire ETEC. Backend distribué basé sur Spring Boot 3.5 avec Spring Cloud, orchestré via API Gateway, Discovery Service et Config Server.
+**Microservice architecture** for the ETEC university platform. Distributed backend powered by Spring Boot 3.5 with Spring Cloud, orchestrated through API Gateway, Discovery Service, and Config Server.
 
 ---
 
@@ -8,7 +8,7 @@
 
 ```mermaid
 graph TB
-    Client[🌐 Client Web / Mobile] --> Gateway[API Gateway :8090]
+    Client[🌐 Web / Mobile Client] --> Gateway[API Gateway :8090]
     Gateway --> Config[Config Server :8888]
     Gateway --> Discovery[Eureka Discovery :8761]
     Gateway --> Services[32 Business Microservices]
@@ -17,14 +17,14 @@ graph TB
     Config --> Services
 ```
 
-**Flux :** Client → API Gateway → Eureka Discovery → Microservice → MySQL
+**Flow:** Client → API Gateway → Eureka Discovery → Microservice → MySQL
 
 ---
 
-## 🛠️ Stack Technique
+## 🛠️ Tech Stack
 
-| Technologie | Version |
-|-------------|---------|
+| Technology | Version |
+|------------|---------|
 | Java | 21 |
 | Spring Boot | 3.5.14 |
 | Spring Cloud | 2025.0.0 |
@@ -38,12 +38,12 @@ graph TB
 
 ---
 
-## 🚀 Démarrage
+## 🚀 Getting Started
 
-### Prérequis
+### Prerequisites
 
 ```bash
-# Vérifier les versions installées
+# Check local versions
 java --version            # Java 21+
 mvn --version             # Maven 3.9+
 mysql --version           # MySQL 8.x
@@ -51,12 +51,12 @@ mysql --version           # MySQL 8.x
 
 - **Java 21** (JDK)
 - **Maven** ≥ 3.9
-- **MySQL** 8.x avec base `siteetec` créée
-- **Node.js** (optionnel, pour le frontend)
+- **MySQL** 8.x with `siteetec` database created
+- **Node.js** (optional, for frontend)
 
-### Infrastructure (ordre obligatoire)
+### Infrastructure (start order is required)
 
-Lancer dans cet ordre depuis la racine (`/backend/`) :
+Run these from the project root (`/backend/`) in this exact order:
 
 ```bash
 # 1. Config Server (port 8888)
@@ -69,37 +69,37 @@ mvn spring-boot:run -pl discovery_service -DskipTests -q
 mvn spring-boot:run -pl api_gateway -DskipTests -q
 ```
 
-### Microservices Métier
+### Business Microservices
 
-Après l'infrastructure, lancer les services souhaités (chaque service = un processus indépendant) :
+After infrastructure is up, start the services you need (each service = independent process):
 
 ```bash
-# Services principaux
-mvn spring-boot:run -pl actualite -DskipTests    # Actualités
-mvn spring-boot:run -pl admin -DskipTests        # Administration
-mvn spring-boot:run -pl utilisateur -DskipTests  # Utilisateurs / Auth
-mvn spring-boot:run -pl coursenligne -DskipTests  # Cours en ligne
-mvn spring-boot:run -pl note -DskipTests          # Notes
-mvn spring-boot:run -pl presence -DskipTests      # Présences
-mvn spring-boot:run -pl empoiDuTemps -DskipTests  # Emploi du temps
+# Core services
+mvn spring-boot:run -pl actualite -DskipTests -q     # News
+mvn spring-boot:run -pl admin -DskipTests -q          # Administration
+mvn spring-boot:run -pl utilisateur -DskipTests -q    # Users / Auth
+mvn spring-boot:run -pl coursenligne -DskipTests -q   # Online courses
+mvn spring-boot:run -pl note -DskipTests -q           # Grades
+mvn spring-boot:run -pl presence -DskipTests -q       # Attendance
+mvn spring-boot:run -pl empoiDuTemps -DskipTests -q   # Schedule
 
-# Services supports
-mvn spring-boot:run -pl notification -DskipTests # Notifications
-mvn spring-boot:run -pl email -DskipTests         # Emails
-mvn spring-boot:run -pl messagerie -DskipTests    # Messagerie
-mvn spring-boot:run -pl visio -DskipTests         # Visioconférence
-mvn spring-boot:run -pl quiz -DskipTests          # Quiz
-mvn spring-boot:run -pl progression -DskipTests   # Progression
-mvn spring-boot:run -pl common -DskipTests        # Bibliothèque commune
+# Support services
+mvn spring-boot:run -pl notification -DskipTests -q   # Notifications
+mvn spring-boot:run -pl email -DskipTests -q          # Emails
+mvn spring-boot:run -pl messagerie -DskipTests -q     # Messaging
+mvn spring-boot:run -pl visio -DskipTests -q          # Videoconference
+mvn spring-boot:run -pl quiz -DskipTests -q           # Quizzes
+mvn spring-boot:run -pl progression -DskipTests -q    # Progress tracking
+mvn spring-boot:run -pl common -DskipTests -q         # Shared library
 ```
 
-### Build complet
+### Full Build
 
 ```bash
-# Builder tous les modules (sans tests)
+# Build all modules (skip tests)
 mvn clean install -DskipTests
 
-# Avec logs réduits (mode silencieux)
+# Quiet mode (reduced logs)
 mvn clean install -DskipTests -q
 ```
 
@@ -109,96 +109,96 @@ mvn clean install -DskipTests -q
 
 ### Infrastructure
 
-| Module | Port | Rôle |
+| Module | Port | Role |
 |--------|------|------|
-| `config_server` | 8888 | Configuration centralisée |
-| `discovery_service` | 8761 | Registre Eureka (Service Discovery) |
-| `api_gateway` | 8090 | Point d'entrée unique, routage, auth |
+| `config_server` | 8888 | Centralized configuration |
+| `discovery_service` | 8761 | Eureka Service Registry |
+| `api_gateway` | 8090 | Single entry point, routing, auth |
 
-### Gestion des Utilisateurs
+### User Management
 
-| Module | Spring App | Rôle |
+| Module | Spring App | Role |
 |--------|-----------|------|
 | `utilisateur` | `UTILISATEUR` | Auth, users, JWT |
-| `admin` | `ADMIN` | Gestion des administrateurs |
-| `Etudiant/etudiant` | `ETUDIANT` | Profils étudiants |
-| `Enseignant/enseignant` | `ENSEIGNANT` | Profils enseignants |
-| `profile` | `PROFILE` | Profils utilisateurs |
-| `Encadreur/encadreur` | `ENCADREUR` | Encadreurs pédagogiques |
+| `admin` | `ADMIN` | Admin management |
+| `Etudiant/etudiant` | `ETUDIANT` | Student profiles |
+| `Enseignant/enseignant` | `ENSEIGNANT` | Teacher profiles |
+| `profile` | `PROFILE` | User profiles |
+| `Encadreur/encadreur` | `ENCADREUR` | Academic supervisors |
 
-### Pédagogie
+### Education
 
-| Module | Spring App | Rôle |
+| Module | Spring App | Role |
 |--------|-----------|------|
-| `coursenligne` | `COURSENLIGNE` | Cours, chapitres, leçons, ressources, vidéos |
-| `note` | `NOTE` | Notes des étudiants |
-| `moyenne` | `MOYENNE` | Calcul des moyennes |
-| `matiere` | `MATIERE` | Matières enseignées |
-| `filiere` | `FILIERE` | Filières / parcours |
-| `niveau` | `NIVEAU` | Niveaux (L1, L2, L3, M1, M2) |
-| `semestre` | `SEMESTRE` | Semestres académiques |
-| `univesitaire` | `UNIVESITAIRE` | Années universitaires |
-| `domaine` | `DOMAINE` | Domaines de formation |
-| `memoire` | `MEMOIRE` | Mémoires de fin d'études |
-| `devoir` | `DEVOIR` | Devoirs et exercices |
-| `quiz` | `QUIZ` | Quiz et évaluations |
-| `progression` | `PROGRESSION` | Suivi de progression |
-| `enligne` | `ENLIGNE` | Formations en ligne |
-| `emploiDuTemps` | `EMPLOIDUTEMPS` | Emplois du temps |
+| `coursenligne` | `COURSENLIGNE` | Courses, chapters, lessons, resources, videos |
+| `note` | `NOTE` | Student grades |
+| `moyenne` | `MOYENNE` | Grade averages |
+| `matiere` | `MATIERE` | Subjects taught |
+| `filiere` | `FILIERE` | Programs / tracks |
+| `niveau` | `NIVEAU` | Levels (L1, L2, L3, M1, M2) |
+| `semestre` | `SEMESTRE` | Academic semesters |
+| `univesitaire` | `UNIVESITAIRE` | Academic years |
+| `domaine` | `DOMAINE` | Fields of study |
+| `memoire` | `MEMOIRE` | Final year projects |
+| `devoir` | `DEVOIR` | Assignments |
+| `quiz` | `QUIZ` | Quizzes and assessments |
+| `progression` | `PROGRESSION` | Progress tracking |
+| `enligne` | `ENLIGNE` | Online training |
+| `emploiDuTemps` | `EMPLOIDUTEMPS` | Schedules |
 
-### Communication & Contenu
+### Communication & Content
 
-| Module | Spring App | Rôle |
+| Module | Spring App | Role |
 |--------|-----------|------|
-| `actualite` | `ACTUALITE` | Actualités et annonces |
-| `notification` | `NOTIFICATION` | Notifications push |
-| `email` | `EMAIL` | Envoi d'emails |
-| `messagerie` | `MESSAGERIE` | Messagerie interne |
-| `visio` | `VISIO` | Visioconférence |
-| `president` | `PRESIDENT` | Messages du président |
+| `actualite` | `ACTUALITE` | News and announcements |
+| `notification` | `NOTIFICATION` | Push notifications |
+| `email` | `EMAIL` | Email sending |
+| `messagerie` | `MESSAGERIE` | Internal messaging |
+| `visio` | `VISIO` | Videoconferencing |
+| `president` | `PRESIDENT` | President's messages |
 | `slides` | `SLIDES` | Slides / carousel |
-| `organigramme` | `ORGANIGRAMME` | Organigramme de l'école |
-| `historique` | `HISTORIQUE` | Historique de l'école |
-| `presence` | `PRESENCE` | Gestion des présences |
+| `organigramme` | `ORGANIGRAMME` | School organization chart |
+| `historique` | `HISTORIQUE` | School history |
+| `presence` | `PRESENCE` | Attendance tracking |
 
 ---
 
 ## ⚙️ Configuration
 
-### Base de données
+### Database
 
 ```properties
-# Chaque microservice se connecte à la même base MySQL
+# All microservices connect to the same MySQL database
 spring.datasource.url=jdbc:mysql://localhost:3306/siteetec?useSSL=false&serverTimezone=UTC
 spring.datasource.username=root
-spring.datasource.password=<votre-mot-de-passe>
+spring.datasource.password=<your-password>
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-### Config Server (optionnel)
+### Config Server (optional)
 
-Les microservices peuvent lire leur config depuis le Config Server (`:8888`) ou utiliser leurs `application.properties` locaux via :
+Microservices can read configuration from the Config Server (`:8888`) or use their local `application.properties`:
 
 ```properties
 spring.config.import=optional:configserver:http://localhost:8888
 ```
 
-### Ports dynamiques (Eureka)
+### Dynamic Ports (Eureka)
 
-Les microservices utilisent `server.port=0` pour un port aléatoire. Eureka les découvre automatiquement.
+Microservices use `server.port=0` for random port assignment. Eureka handles automatic discovery.
 
 ---
 
 ## 🔌 API Gateway
 
-Point d'entrée unique : `http://localhost:8090`
+Single entry point: `http://localhost:8090`
 
-La Gateway :
-- Route les requêtes vers les microservices via Eureka (`lb://SERVICE_NAME`)
-- Filtre l'authentification JWT
-- Centralise CORS, rate limiting
+The Gateway:
+- Routes requests to microservices via Eureka (`lb://SERVICE_NAME`)
+- Filters JWT authentication
+- Centralizes CORS, rate limiting
 
-### Routes principales
+### Main Routes
 
 ```yaml
 /auth/**         → lb://UTILISATEUR
@@ -208,38 +208,38 @@ La Gateway :
 /api/cours/**    → lb://COURSENLIGNE
 /api/actualites/** → lb://ACTUALITE
 /api/notes/**    → lb://NOTE
-... 20+ autres routes
+... 20+ more routes
 ```
 
 ---
 
-## 🧪 Développement
+## 🧪 Development
 
-### Commandes utiles
+### Useful Commands
 
 ```bash
-# Lancer un service spécifique avec profil dev
+# Run a specific service with dev profile
 mvn spring-boot:run -pl <module> -Dspring-boot.run.profiles=dev
 
-# Build sans tests
+# Build without tests
 mvn clean install -DskipTests
 
-# Voir les logs d'un service
+# Watch service logs
 tail -f logs/<module>.log
 ```
 
-### Bonnes pratiques
+### Best Practices
 
-- **Nommage** : `spring.application.name` en MAJUSCULES pour Eureka
-- **Entités** : Annotation `@Table(name = "prefixe_nom")` pour éviter les conflits
-- **Ports** : Utiliser `server.port=0` pour les services Eureka
-- **Exceptions** : `GlobalExceptionHandler` dans le module `common/`
+- **Naming**: Use UPPERCASE `spring.application.name` for Eureka registration
+- **Entities**: Annotate with `@Table(name = "prefix_name")` to avoid conflicts
+- **Ports**: Use `server.port=0` for Eureka-registered services
+- **Exceptions**: Use `GlobalExceptionHandler` from the `common/` module
 
 ---
 
 ## 🔗 Frontend
 
-L'interface utilisateur React se trouve dans le dossier [`../frontend/`](../frontend/).
+The React UI is located in [`../frontend/`](../frontend/).
 
 ```env
 VITE_API_GATEWAY_URL=http://localhost:8090
@@ -247,6 +247,6 @@ VITE_API_GATEWAY_URL=http://localhost:8090
 
 ---
 
-## 📄 Licence
+## 📄 License
 
-Projet privé — ETEC University
+Private project — ETEC University
