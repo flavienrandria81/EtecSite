@@ -5,11 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -20,10 +15,10 @@ public class SecurityConfig {
 
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(cors -> {})
+                .cors(cors -> cors.disable())
                 .authorizeExchange(exchanges -> exchanges
 
-                        // public endpoints 
+                        // public endpoints
                         .pathMatchers("/auth/**").permitAll()
 
                         // roles
@@ -33,11 +28,11 @@ public class SecurityConfig {
 
                         .pathMatchers("/api/actualites/**").permitAll()
                         .pathMatchers("/api/encadreurs/**").permitAll()
-                        .pathMatchers("/api/ressours/**").hasRole("ETUDIANT")
-                        .pathMatchers("/api/cours/**").hasRole("ETUDIANT")
-                        .pathMatchers("/api/chapitres/**").hasRole("ETUDIANT")
-                        .pathMatchers("/api/domains/**").hasRole("ETUDIANT")
-                        .pathMatchers("api/emails/**").permitAll()
+                        .pathMatchers("/api/ressours/**").hasAnyRole("ETUDIANT", "ENSEIGNANT", "ADMIN")
+                        .pathMatchers("/api/cours/**").hasAnyRole("ETUDIANT", "ENSEIGNANT", "ADMIN")
+                        .pathMatchers("/api/chapitres/**").hasAnyRole("ETUDIANT", "ENSEIGNANT", "ADMIN")
+                        .pathMatchers("/api/domains/**").hasAnyRole("ETUDIANT", "ENSEIGNANT", "ADMIN")
+                        .pathMatchers("/api/emails/**").permitAll()
                         .pathMatchers("/api/emploiDuTemps/**").permitAll()
                         .pathMatchers("/api/encadrements/**").permitAll()
                         .pathMatchers("/api/filiers/**").permitAll()
@@ -54,6 +49,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/semestres/**").permitAll()
                         .pathMatchers("/api/slides/**").permitAll()
                         .pathMatchers("/api/anneesUniv/**").permitAll()
+                        .pathMatchers("/api/users/**").hasRole("ADMIN")
 
                         // others
                         .anyExchange().authenticated()
