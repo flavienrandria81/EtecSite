@@ -9,24 +9,37 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class EtudiantRegistrationDTO {
 
+
     // User
     private String username;
+
+    private String nom;
+
+    private String prenom;
+
     private String email;
+
     private String password;
+
+
 
     // Etudiant
     private String matricule;
+
     private String cin;
+
     private String telephone;
+
     private String adresse;
-    @Enumerated(EnumType.STRING)
+
+
     private TypeFormation typeFormation;
 
+
     private Long filiereId;
+
     private Long niveauId;
+
     private Long domaineId;
 
-    private MultipartFile photo;
-    private MultipartFile diplome;
-    private MultipartFile releve;
 }

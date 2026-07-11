@@ -14,14 +14,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-
     private final JwtFilter jwtFilter;
-
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
-
 
         return http
                 .csrf(csrf -> csrf.disable())
@@ -33,12 +30,23 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // inscription publique
                         .requestMatchers(
-                                "/etudiants/**"
+                                "/etudiants/registration"
                         ).permitAll()
 
-                        .anyRequest().permitAll()
+                        // QR public si nécessaire
+                        .requestMatchers(
+                                "/etudiants/{id}/qr"
+                        ).permitAll()
+
+                        // le reste nécessite JWT
+                        .requestMatchers(
+                                "/etudiants/**"
+                        ).authenticated()
+
+                        .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(

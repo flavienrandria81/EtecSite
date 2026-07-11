@@ -23,6 +23,9 @@ public class Etudiant {
     @Enumerated(EnumType.STRING)
     private TypeFormation typeFormation;
 
+    @Enumerated(EnumType.STRING)
+    private StatutEtudiant statut;
+
     @Column(unique = true)
     private String matricule;
     private String cin;
