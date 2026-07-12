@@ -9,19 +9,45 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "UTILISATEUR")
 public interface UserFeignClient {
 
+
+    /**
+     * Création d'un ADMIN
+     * Appelle User Service
+     */
     @PostMapping("/api/auth/register-admin")
     ResponseEntity<UserResponseDTO> registerAdmin(
             @RequestBody UserRegistrationDTO adminUser
     );
 
-    @GetMapping("/api/auth/users/{id}")
-    ResponseEntity<UserResponseDTO> getUserById(
-            @PathVariable Long id
+
+
+    /**
+     * Création du SUPER_ADMIN
+     * Uniquement une fois
+     */
+    @PostMapping("/api/auth/register-super-admin")
+    ResponseEntity<UserResponseDTO> registerSuperAdmin(
+            @RequestBody UserRegistrationDTO user
     );
 
+
+
+    /**
+     * Récupérer un utilisateur depuis User Service
+     */
+    @GetMapping("/api/auth/users/{id}")
+    ResponseEntity<UserResponseDTO> getUserById(
+            @PathVariable("id") Long id
+    );
+
+
+
+    /**
+     * Supprimer utilisateur
+     */
     @DeleteMapping("/api/auth/users/{id}")
     ResponseEntity<?> deleteUser(
-            @PathVariable Long id
+            @PathVariable("id") Long id
     );
 
 }

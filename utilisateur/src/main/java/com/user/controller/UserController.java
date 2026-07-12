@@ -24,122 +24,318 @@ import java.util.Map;
 @Slf4j
 public class UserController {
 
+
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
+
     private final JwtUtils jwtUtils;
+
     private final AuthenticationManager authenticationManager;
 
 
-    @PostMapping("/register-admin")
-    public ResponseEntity<?> registerAdmin(@RequestBody User adminUser) {
+    /**
+     * Création du SUPER_ADMIN
+     * Un seul SUPER_ADMIN autorisé dans le système
+     */
+    @PostMapping("/register-super-admin")
+    public ResponseEntity<?> registerSuperAdmin(
+            @RequestBody User user
+    ){
 
-        // 1. Vérifier si l'email existe déjà
-        if (userRepository.findByEmail(adminUser.getEmail()) != null) {
-            return ResponseEntity.badRequest()
-                    .body("Email is already in use");
+        // Vérifier si un SUPER_ADMIN existe déjà
+        if(userRepository.countByRole("SUPER_ADMIN") > 0){
+
+            return ResponseEntity
+                    .badRequest()
+                    .body("Un SUPER_ADMIN existe déjà");
+
         }
 
-        // 2. Sécuriser les rôles acceptés pour éviter l'injection de rôles fantaisistes
-        String role = adminUser.getRole();
-        if (!"SUPER_ADMIN".equals(role) && !"ADMIN".equals(role) && !"PEDAGOGIQUE_ADMIN".equals(role)) {
-            return ResponseEntity.badRequest()
-                    .body("Invalid administrative role provided");
+
+        // Vérifier email
+        if(userRepository.findByEmail(user.getEmail()) != null){
+
+            return ResponseEntity
+                    .badRequest()
+                    .body("Email déjà utilisé");
+
         }
 
-        // 3. Encoder le mot de passe reçu en clair depuis l'Admin Service
-        adminUser.setPassword(
-                passwordEncoder.encode(adminUser.getPassword())
-        );
 
-        // 4. Sauvegarder l'administrateur dans la table 'users'
-        User savedAdmin = userRepository.save(adminUser);
+        // Forcer le rôle
+        user.setRole("SUPER_ADMIN");
 
-        return ResponseEntity.ok(savedAdmin);
-    }
-    @PostMapping("/registration")
-    public ResponseEntity<?> register(@RequestBody User user) {
 
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.badRequest()
-                    .body("Email is already in use");
-        }
-
+        // Encoder password
         user.setPassword(
                 passwordEncoder.encode(user.getPassword())
         );
 
-        User savedUser = userRepository.save(user);
+
+        User savedUser =
+                userRepository.save(user);
+
 
         return ResponseEntity.ok(savedUser);
     }
 
+
+
+    /**
+     * Création d'un ADMIN
+     * Seulement SUPER_ADMIN peut créer un ADMIN
+     */
+    @PostMapping("/register-admin")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<?> registerAdmin(
+            @RequestBody User adminUser
+    ){
+
+        if(userRepository.findByEmail(adminUser.getEmail()) != null){
+
+            return ResponseEntity
+                    .badRequest()
+                    .body("Email déjà utilisé");
+
+        }
+
+
+        // Le rôle est imposé
+        adminUser.setRole("ADMIN");
+
+
+        adminUser.setPassword(
+                passwordEncoder.encode(
+                        adminUser.getPassword()
+                )
+        );
+
+
+        User savedAdmin =
+                userRepository.save(adminUser);
+
+
+        return ResponseEntity.ok(savedAdmin);
+    }
+
+
+
+    /**
+     * Inscription normale
+     * Exemple : étudiant
+     */
+    @PostMapping("/registration")
+    public ResponseEntity<?> register(
+            @RequestBody User user
+    ){
+
+        if(userRepository.findByEmail(user.getEmail()) != null){
+
+            return ResponseEntity
+                    .badRequest()
+                    .body("Email déjà utilisé");
+
+        }
+
+
+        // Rôle par défaut
+        user.setRole("ETUDIANT");
+
+
+        user.setPassword(
+                passwordEncoder.encode(
+                        user.getPassword()
+                )
+        );
+
+
+        User savedUser =
+                userRepository.save(user);
+
+
+        return ResponseEntity.ok(savedUser);
+    }
+
+
+
+    /**
+     * Connexion JWT
+     */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user) {
+    public ResponseEntity<?> login(
+            @RequestBody User user
+    ){
 
         try {
 
+
             Authentication authentication =
                     authenticationManager.authenticate(
+
                             new UsernamePasswordAuthenticationToken(
+
                                     user.getEmail(),
+
                                     user.getPassword()
                             )
                     );
 
-            if (authentication.isAuthenticated()) {
 
-                // récupérer l'utilisateur complet depuis la base
+
+            if(authentication.isAuthenticated()){
+
+
                 User dbUser =
                         userRepository.findByEmail(
                                 user.getEmail()
                         );
 
-                Map<String, Object> authData =
+
+                Map<String,Object> authData =
                         new HashMap<>();
+
+
+                String token =
+                        jwtUtils.generationToken(
+
+                                dbUser.getEmail(),
+
+                                dbUser.getRole(),
+
+                                dbUser.getId()
+
+                        );
+
 
                 authData.put(
                         "token",
-                        jwtUtils.generationToken(
-                                dbUser.getEmail(),
-                                dbUser.getRole(),
-                                dbUser.getId()
-                        )
+                        token
                 );
 
-                authData.put("type", "Bearer");
 
-                authData.put("email", dbUser.getEmail());
-                authData.put("role", dbUser.getRole());
-                authData.put("userId", dbUser.getId());
+                authData.put(
+                        "type",
+                        "Bearer"
+                );
+
+
+                authData.put(
+                        "email",
+                        dbUser.getEmail()
+                );
+
+
+                authData.put(
+                        "role",
+                        dbUser.getRole()
+                );
+
+
+                authData.put(
+                        "userId",
+                        dbUser.getId()
+                );
+
 
                 return ResponseEntity.ok(authData);
+
             }
 
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid Email or Password");
 
-        } catch (AuthenticationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Email ou mot de passe incorrect");
 
-            log.error("Login Error : {}", e.getMessage());
 
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid Email or Password");
+
+        }catch(AuthenticationException e){
+
+
+            log.error(
+                    "Erreur login : {}",
+                    e.getMessage()
+            );
+
+
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Email ou mot de passe incorrect");
+
         }
+
     }
 
+
+
+    /**
+     * Récupérer un utilisateur
+     */
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-        System.out.println("Recherche utilisateur : " + id);
+    public ResponseEntity<User> getUser(
+            @PathVariable Long id
+    ){
+
         return userRepository.findById(id)
+
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+                .orElse(
+                        ResponseEntity.notFound().build()
+                );
     }
 
+
+
+    /**
+     * Supprimer utilisateur
+     * Seulement SUPER_ADMIN
+     * Impossible de supprimer SUPER_ADMIN
+     */
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id){
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<?> deleteUser(
+            @PathVariable Long id
+    ){
 
-        userRepository.deleteById(id);
 
-        return ResponseEntity.ok("Utilisateur supprimé");
+        User user =
+                userRepository.findById(id)
+                        .orElse(null);
+
+
+
+        if(user == null){
+
+            return ResponseEntity
+                    .notFound()
+                    .build();
+
+        }
+
+
+
+        if("SUPER_ADMIN".equals(user.getRole())){
+
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            "Impossible de supprimer le SUPER_ADMIN"
+                    );
+
+        }
+
+
+
+        userRepository.delete(user);
+
+
+
+        return ResponseEntity.ok(
+                "Utilisateur supprimé"
+        );
+
     }
+
 }

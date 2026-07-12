@@ -1,6 +1,5 @@
 package com.admin.admin.config;
 
-import com.admin.admin.config.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,52 +16,106 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+
     private final JwtUtils jwtUtils;
 
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
 
-        String email = null;
+        String authHeader = request.getHeader("Authorization");
+
+
         String jwt = null;
+        String email = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+        if(authHeader != null && authHeader.startsWith("Bearer ")){
+
             jwt = authHeader.substring(7);
+
             try {
+
                 email = jwtUtils.extractEmail(jwt);
-            } catch (Exception e) {
-                // Token invalide ou expiré
-                logger.error("Impossible d'extraire l'email du token : " + e.getMessage());
+
+            }catch(Exception e){
+
+                System.out.println("JWT invalide : " + e.getMessage());
+
             }
+
         }
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            // On extrait directement le rôle stocké dans le JWT
+
+        if(email != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null){
+
+
+
             String role = jwtUtils.extractRole(jwt);
 
-            // On recrée les permissions Spring Security avec le préfixe "ROLE_"
-            List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
 
-            UserDetails userDetails = new User(email, "", authorities);
+            System.out.println("EMAIL JWT : " + email);
 
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            System.out.println("ROLE JWT : " + role);
 
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            // On injecte l'utilisateur authentifié dans le contexte de sécurité
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            SimpleGrantedAuthority authority =
+                    new SimpleGrantedAuthority(
+                            "ROLE_" + role
+                    );
+
+
+            System.out.println(
+                    "AUTHORITY : " + authority.getAuthority()
+            );
+
+
+
+            UserDetails userDetails =
+                    new User(
+                            email,
+                            "",
+                            Collections.singletonList(authority)
+                    );
+
+
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource()
+                            .buildDetails(request)
+            );
+
+
+
+            SecurityContextHolder
+                    .getContext()
+                    .setAuthentication(authentication);
+
         }
 
-        filterChain.doFilter(request, response);
+
+        filterChain.doFilter(request,response);
+
     }
 }
