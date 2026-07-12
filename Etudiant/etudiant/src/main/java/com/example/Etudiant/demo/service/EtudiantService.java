@@ -605,5 +605,23 @@ public class EtudiantService {
 
     }
 
+    // =====================================================
+// TROUVER ETUDIANT PAR USER ID
+// =====================================================
+
+    public Etudiant getByUserId(Long userId) {
+
+
+        return etudiantRepository
+                .findByUserId(userId)
+
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "Etudiant introuvable pour cet utilisateur"
+                        )
+                );
+
+    }
+
 
 }

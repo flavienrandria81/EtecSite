@@ -4,82 +4,222 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Component;
+
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Collections;
 
+
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+
     private final JwtUtils jwtUtils;
 
+
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    )
             throws ServletException, IOException {
+
+
 
         String path = request.getServletPath();
 
-        if(path.startsWith("/api/auth")) {
-            filterChain.doFilter(request, response);
+
+
+        /*
+         * ===============================
+         * ROUTES PUBLIQUES
+         * ===============================
+         */
+
+        if(path.equals("/etudiants/registration")
+                || path.startsWith("/api/auth")
+                || path.startsWith("/swagger-ui")
+                || path.startsWith("/v3/api-docs")
+                || path.equals("/swagger-ui.html")) {
+
+
+            filterChain.doFilter(
+                    request,
+                    response
+            );
+
             return;
         }
-        String authHeader = request.getHeader("Authorization");
+
+
+
+
+
+        /*
+         * ===============================
+         * RECUPERATION JWT
+         * ===============================
+         */
+
+
+        String authHeader =
+                request.getHeader("Authorization");
+
 
         String jwt = null;
 
-        // 🔵 1. récupérer token
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwt = authHeader.substring(7);
+
+
+        if(authHeader != null
+                && authHeader.startsWith("Bearer ")) {
+
+
+            jwt =
+                    authHeader.substring(7);
+
         }
 
-        // 🔵 2. validation + extraction
-        if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+
+
+        /*
+         * ===============================
+         * VALIDATION JWT
+         * ===============================
+         */
+
+
+        if(jwt != null
+                && SecurityContextHolder
+                .getContext()
+                .getAuthentication() == null) {
+
+
 
             try {
-                String email = jwtUtils.extractEmail(jwt);
-                Long userId = jwtUtils.extractUserId(jwt);
-                String role = jwtUtils.extractRole(jwt);
 
-                // 🔵 validation simple
-                if (jwtUtils.validateToken(jwt)) {
 
-                    UsernamePasswordAuthenticationToken auth =
+
+                String email =
+                        jwtUtils.extractEmail(jwt);
+
+
+
+                Long userId =
+                        jwtUtils.extractUserId(jwt);
+
+
+
+                String role =
+                        jwtUtils.extractRole(jwt);
+
+
+
+
+                if(jwtUtils.validateToken(jwt)) {
+
+
+
+                    UsernamePasswordAuthenticationToken authentication =
+
+
                             new UsernamePasswordAuthenticationToken(
+
                                     email,
+
                                     null,
+
                                     Collections.singletonList(
-                                            new SimpleGrantedAuthority("ROLE_" + role)
+
+                                            new SimpleGrantedAuthority(
+                                                    "ROLE_" + role
+                                            )
+
                                     )
                             );
-                    // 🔵 stocker infos pour Controller/Service
-                    request.setAttribute("userId", userId);
-                    request.setAttribute("role", role);
-                    request.setAttribute("email", email);
 
-                    System.out.println("Authorization = " + authHeader);
-                    System.out.println("JWT = " + jwt);
-                    System.out.println("Email = " + email);
-                    System.out.println("Role = " + role);
-                    System.out.println("UserId = " + userId);
 
-                    SecurityContextHolder.getContext().setAuthentication(auth);
+
+
+                    /*
+                     * Stocker les informations JWT
+                     */
+
+                    request.setAttribute(
+                            "userId",
+                            userId
+                    );
+
+
+                    request.setAttribute(
+                            "email",
+                            email
+                    );
+
+
+                    request.setAttribute(
+                            "role",
+                            role
+                    );
+
+
+
+                    System.out.println("====================");
+                    System.out.println("JWT VALIDE");
+                    System.out.println("Email : " + email);
+                    System.out.println("Role : " + role);
+                    System.out.println("UserId : " + userId);
+                    System.out.println("====================");
+
+
+
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(
+                                    authentication
+                            );
+
                 }
 
-            } catch (Exception e) {
-                filterChain.doFilter(request, response);
-                return;
+
+
+            } catch(Exception e) {
+
+
+                System.out.println(
+                        "Erreur JWT : "
+                                + e.getMessage()
+                );
+
             }
+
         }
 
-        filterChain.doFilter(request, response);
+
+
+
+        /*
+         * continuer la requête
+         */
+
+        filterChain.doFilter(
+                request,
+                response
+        );
+
     }
+
 }

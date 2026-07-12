@@ -6,19 +6,23 @@ import com.example.Etudiant.demo.entity.Etudiant;
 import com.example.Etudiant.demo.entity.TypeFormation;
 import com.example.Etudiant.demo.service.EtudiantService;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 
+
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import java.util.Map;
 
 
 @RestController
@@ -32,33 +36,36 @@ public class EtudiantController {
 
 
     // =====================================================
-    // INSCRIPTION ETUDIANT
+    // INSCRIPTION ETUDIANT (PUBLIC)
     // =====================================================
+
 
     @PostMapping(
             value = "/registration",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<Etudiant> register(
+    public ResponseEntity<?> create(
+
+            @RequestPart("data") String data,
+
+            @RequestPart("photo") MultipartFile photo,
+
+            @RequestPart("releve") MultipartFile releve,
+
+            @RequestPart("diplome") MultipartFile diplome
+
+    ) throws Exception {
 
 
-            @RequestPart("data")
-            EtudiantRegistrationDTO dto,
+        ObjectMapper mapper = new ObjectMapper();
 
 
-            @RequestPart("photo")
-            MultipartFile photo,
+        EtudiantRegistrationDTO dto =
+                mapper.readValue(
+                        data,
+                        EtudiantRegistrationDTO.class
+                );
 
-
-            @RequestPart("releve")
-            MultipartFile releve,
-
-
-            @RequestPart("diplome")
-            MultipartFile diplome
-
-
-    ){
 
         Etudiant etudiant =
                 etudiantService.registerEtudiantComplete(
@@ -70,83 +77,23 @@ public class EtudiantController {
 
 
         return ResponseEntity.ok(etudiant);
-
     }
 
 
 
 
-
     // =====================================================
-    // ADMIN : VALIDER ETUDIANT
-    // Génère QR Code + Email
-    // =====================================================
-
-
-    @PutMapping("/validation/{id}")
-    public ResponseEntity<Etudiant> valider(
-
-
-            @PathVariable Long id
-
-    ){
-
-
-        Etudiant etudiant =
-                etudiantService.validerEtudiant(id);
-
-
-
-        return ResponseEntity.ok(etudiant);
-
-    }
-
-
-
-
-
-    // =====================================================
-    // ADMIN : REFUSER ETUDIANT
-    // =====================================================
-
-
-    @PutMapping("/refus/{id}")
-    public ResponseEntity<Etudiant> refuser(
-
-
-            @PathVariable Long id
-
-
-    ){
-
-
-        Etudiant etudiant =
-                etudiantService.refuserEtudiant(id);
-
-
-
-        return ResponseEntity.ok(etudiant);
-
-    }
-
-
-
-
-
-    // =====================================================
-    // LISTE ETUDIANTS
+    // ADMIN : LISTE ETUDIANTS
     // =====================================================
 
 
     @GetMapping
-    public ResponseEntity<Page<Etudiant>> getAll(
-
-
+    @PreAuthorize(
+            "hasAnyRole('ADMIN','SUPER_ADMIN')"
+    )
+    public ResponseEntity<Page<Etudiant>> findAll(
             Pageable pageable
-
-
     ){
-
 
         return ResponseEntity.ok(
                 etudiantService.getAllEtudiants(pageable)
@@ -158,20 +105,22 @@ public class EtudiantController {
 
 
 
+
+
     // =====================================================
-    // RECHERCHE PAR ID
+    // ADMIN : DETAIL ETUDIANT
     // =====================================================
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Etudiant> getById(
-
+    @PreAuthorize(
+            "hasAnyRole('ADMIN','SUPER_ADMIN')"
+    )
+    public ResponseEntity<Etudiant> findById(
 
             @PathVariable Long id
 
-
     ){
-
 
         return ResponseEntity.ok(
                 etudiantService.getEtudiantById(id)
@@ -183,23 +132,28 @@ public class EtudiantController {
 
 
 
+
+
+
     // =====================================================
-    // RECHERCHE PAR MATRICULE
+    // ADMIN : VALIDATION + QR CODE
     // =====================================================
 
 
-    @GetMapping("/matricule/{matricule}")
-    public ResponseEntity<Etudiant> getByMatricule(
+    @PutMapping("/{id}/valider")
+    @PreAuthorize(
+            "hasRole('ADMIN')"
+    )
+    public ResponseEntity<Etudiant> valider(
 
-
-            @PathVariable String matricule
-
+            @PathVariable Long id
 
     ){
 
-
         return ResponseEntity.ok(
-                etudiantService.getByMatricule(matricule)
+
+                etudiantService.validerEtudiant(id)
+
         );
 
     }
@@ -208,24 +162,27 @@ public class EtudiantController {
 
 
 
+
+
     // =====================================================
-    // DETAILS COMPLETS
-    // User + Filiere + Niveau + Domaine
+    // ADMIN : REFUSER
     // =====================================================
 
 
-    @GetMapping("/complet/{id}")
-    public ResponseEntity<Map<String,Object>> getComplet(
-
+    @PutMapping("/{id}/refuser")
+    @PreAuthorize(
+            "hasRole('ADMIN')"
+    )
+    public ResponseEntity<Etudiant> refuser(
 
             @PathVariable Long id
 
-
     ){
 
-
         return ResponseEntity.ok(
-                etudiantService.getEtudiantComplet(id)
+
+                etudiantService.refuserEtudiant(id)
+
         );
 
     }
@@ -234,58 +191,19 @@ public class EtudiantController {
 
 
 
-    // =====================================================
-    // QR CODE IMAGE
-    // =====================================================
-
-
-    @GetMapping("/{id}/qr")
-    public ResponseEntity<byte[]> getQrCode(
-
-
-            @PathVariable Long id
-
-
-    ){
-
-
-        Etudiant etudiant =
-                etudiantService.getEtudiantById(id);
-
-
-
-        if(etudiant.getQrCode() == null){
-
-            return ResponseEntity
-                    .notFound()
-                    .build();
-
-        }
-
-
-
-        return ResponseEntity.ok()
-                .contentType(
-                        MediaType.IMAGE_PNG
-                )
-                .body(
-                        etudiant.getQrCode()
-                );
-
-    }
-
-
-
 
 
     // =====================================================
-    // MODIFICATION ETUDIANT
+    // ADMIN : MODIFICATION
     // =====================================================
 
 
     @PutMapping(
-            value="/{id}",
+            value = "/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @PreAuthorize(
+            "hasRole('ADMIN')"
     )
     public ResponseEntity<Etudiant> update(
 
@@ -309,26 +227,16 @@ public class EtudiantController {
             TypeFormation typeFormation,
 
 
-            @RequestParam(
-                    value="photo",
-                    required=false
-            )
+            @RequestPart(required = false)
             MultipartFile photo,
 
 
-            @RequestParam(
-                    value="releve",
-                    required=false
-            )
+            @RequestPart(required = false)
             MultipartFile releve,
 
 
-            @RequestParam(
-                    value="diplome",
-                    required=false
-            )
+            @RequestPart(required = false)
             MultipartFile diplome
-
 
 
     ){
@@ -337,6 +245,7 @@ public class EtudiantController {
         return ResponseEntity.ok(
 
                 etudiantService.updateEtudiant(
+
                         id,
                         matricule,
                         cin,
@@ -346,6 +255,7 @@ public class EtudiantController {
                         photo,
                         releve,
                         diplome
+
                 )
 
         );
@@ -356,26 +266,107 @@ public class EtudiantController {
 
 
 
+
+
     // =====================================================
-    // SUPPRESSION
+    // SUPER ADMIN : SUPPRESSION
     // =====================================================
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(
+            "hasRole('SUPER_ADMIN')"
+    )
     public ResponseEntity<?> delete(
-
 
             @PathVariable Long id
 
-
     ){
-
 
         etudiantService.deleteEtudiant(id);
 
 
         return ResponseEntity.ok(
                 "Etudiant supprimé"
+        );
+
+    }
+
+
+
+
+
+
+
+    // =====================================================
+    // QR CODE
+    // =====================================================
+
+
+    @GetMapping("/{id}/qr")
+    @PreAuthorize(
+            "hasAnyRole('ADMIN','SUPER_ADMIN','ETUDIANT')"
+    )
+    public ResponseEntity<ByteArrayResource> getQr(
+
+            @PathVariable Long id
+
+    ){
+
+
+        Etudiant etudiant =
+                etudiantService.getEtudiantById(id);
+
+
+
+        ByteArrayResource resource =
+                new ByteArrayResource(
+                        etudiant.getQrCode()
+                );
+
+
+
+        return ResponseEntity.ok()
+
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "inline; filename=QR.png"
+                )
+
+                .contentType(
+                        MediaType.IMAGE_PNG
+                )
+
+                .body(resource);
+
+    }
+
+
+
+
+
+
+
+    // =====================================================
+    // ETUDIANT CONNECTE
+    // =====================================================
+
+
+    @GetMapping("/me")
+    @PreAuthorize(
+            "hasRole('ETUDIANT')"
+    )
+    public ResponseEntity<Etudiant> myProfile(
+
+            @RequestAttribute("userId")
+            Long userId
+
+    ){
+
+        return ResponseEntity.ok(
+
+                etudiantService.getByUserId(userId)
+
         );
 
     }
