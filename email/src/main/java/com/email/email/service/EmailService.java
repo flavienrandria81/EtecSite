@@ -14,16 +14,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
 
-
     private final JavaMailSender mailSender;
-
 
     public void sendEmail(EmailRequest request) throws Exception {
 
-
         MimeMessage message =
                 mailSender.createMimeMessage();
-
 
         MimeMessageHelper helper =
                 new MimeMessageHelper(
@@ -31,45 +27,42 @@ public class EmailService {
                         true
                 );
 
-
-        // email de l'expéditeur
+        // Expéditeur
         helper.setFrom("flavienrandria81@gmail.com");
 
+        // Destinataire
+        helper.setTo(request.getTo());
 
-        // destinataire
-        helper.setTo(
-                request.getTo()
-        );
+        // Sujet
+        helper.setSubject(request.getSubject());
 
+        // Contenu
+        helper.setText(request.getMessage(), true);
 
-        // sujet
-        helper.setSubject(
-                request.getSubject()
-        );
-
-
-        // contenu du mail
-        helper.setText(
-                request.getMessage(),
-                true
-        );
-
-
-        // pièce jointe si existe
-        if(request.getAttachment() != null
+        // Pièce jointe
+        if (request.getAttachment() != null
                 && request.getFileName() != null) {
-
 
             helper.addAttachment(
                     request.getFileName(),
-
-                    new ByteArrayResource(
-                            request.getAttachment()
-                    )
+                    new ByteArrayResource(request.getAttachment())
             );
         }
 
+        // ======= ICI =======
+        try {
 
-        mailSender.send(message);
+            mailSender.send(message);
+
+            System.out.println("Email envoyé avec succès");
+
+        } catch (Exception e) {
+
+            System.out.println("Erreur lors de l'envoi du mail :");
+
+            e.printStackTrace();
+
+            throw e;
+        }
     }
 }

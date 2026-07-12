@@ -34,31 +34,17 @@ public class EtudiantController {
     private final EtudiantService etudiantService;
 
 
-
-    // =====================================================
-    // INSCRIPTION ETUDIANT (PUBLIC)
-    // =====================================================
-
-
-    @PostMapping(
-            value = "/registration",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
+    @PostMapping(value = "/registration", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> create(
 
             @RequestPart("data") String data,
-
             @RequestPart("photo") MultipartFile photo,
-
             @RequestPart("releve") MultipartFile releve,
-
             @RequestPart("diplome") MultipartFile diplome
 
     ) throws Exception {
 
-
         ObjectMapper mapper = new ObjectMapper();
-
 
         EtudiantRegistrationDTO dto =
                 mapper.readValue(
@@ -66,34 +52,20 @@ public class EtudiantController {
                         EtudiantRegistrationDTO.class
                 );
 
-
-        Etudiant etudiant =
-                etudiantService.registerEtudiantComplete(
+        Etudiant etudiant = etudiantService.registerEtudiantComplete(
                         dto,
                         photo,
                         releve,
                         diplome
                 );
 
-
         return ResponseEntity.ok(etudiant);
     }
 
 
-
-
-    // =====================================================
-    // ADMIN : LISTE ETUDIANTS
-    // =====================================================
-
-
     @GetMapping
-    @PreAuthorize(
-            "hasAnyRole('ADMIN','SUPER_ADMIN')"
-    )
-    public ResponseEntity<Page<Etudiant>> findAll(
-            Pageable pageable
-    ){
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    public ResponseEntity<Page<Etudiant>> findAll(Pageable pageable){
 
         return ResponseEntity.ok(
                 etudiantService.getAllEtudiants(pageable)
@@ -102,25 +74,9 @@ public class EtudiantController {
     }
 
 
-
-
-
-
-
-    // =====================================================
-    // ADMIN : DETAIL ETUDIANT
-    // =====================================================
-
-
     @GetMapping("/{id}")
-    @PreAuthorize(
-            "hasAnyRole('ADMIN','SUPER_ADMIN')"
-    )
-    public ResponseEntity<Etudiant> findById(
-
-            @PathVariable Long id
-
-    ){
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    public ResponseEntity<Etudiant> findById(@PathVariable Long id){
 
         return ResponseEntity.ok(
                 etudiantService.getEtudiantById(id)
@@ -129,121 +85,43 @@ public class EtudiantController {
     }
 
 
-
-
-
-
-
-
-    // =====================================================
-    // ADMIN : VALIDATION + QR CODE
-    // =====================================================
-
-
     @PutMapping("/{id}/valider")
-    @PreAuthorize(
-            "hasRole('ADMIN')"
-    )
-    public ResponseEntity<Etudiant> valider(
-
-            @PathVariable Long id
-
-    ){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Etudiant> valider(@PathVariable Long id){
 
         return ResponseEntity.ok(
-
                 etudiantService.validerEtudiant(id)
-
         );
 
     }
-
-
-
-
-
-
-
-    // =====================================================
-    // ADMIN : REFUSER
-    // =====================================================
 
 
     @PutMapping("/{id}/refuser")
-    @PreAuthorize(
-            "hasRole('ADMIN')"
-    )
-    public ResponseEntity<Etudiant> refuser(
-
-            @PathVariable Long id
-
-    ){
-
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Etudiant> refuser(@PathVariable Long id){
         return ResponseEntity.ok(
-
                 etudiantService.refuserEtudiant(id)
-
         );
 
     }
 
-
-
-
-
-
-
-    // =====================================================
-    // ADMIN : MODIFICATION
-    // =====================================================
-
-
-    @PutMapping(
-            value = "/{id}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    @PreAuthorize(
-            "hasRole('ADMIN')"
-    )
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Etudiant> update(
 
-
             @PathVariable Long id,
-
-
             @RequestParam String matricule,
-
-
             @RequestParam String cin,
-
-
             @RequestParam String adresse,
-
-
             @RequestParam String phone,
-
-
             @RequestParam(required = false)
-            TypeFormation typeFormation,
-
-
-            @RequestPart(required = false)
-            MultipartFile photo,
-
-
-            @RequestPart(required = false)
-            MultipartFile releve,
-
-
-            @RequestPart(required = false)
-            MultipartFile diplome
-
+            TypeFormation typeFormation, @RequestPart(required = false) MultipartFile photo,
+            @RequestPart(required = false) MultipartFile releve,
+            @RequestPart(required = false) MultipartFile diplome
 
     ){
 
-
         return ResponseEntity.ok(
-
                 etudiantService.updateEtudiant(
 
                         id,
@@ -255,36 +133,17 @@ public class EtudiantController {
                         photo,
                         releve,
                         diplome
-
                 )
-
         );
 
     }
 
-
-
-
-
-
-
-    // =====================================================
-    // SUPER ADMIN : SUPPRESSION
-    // =====================================================
-
-
     @DeleteMapping("/{id}")
-    @PreAuthorize(
-            "hasRole('SUPER_ADMIN')"
-    )
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<?> delete(
-
             @PathVariable Long id
-
     ){
-
         etudiantService.deleteEtudiant(id);
-
 
         return ResponseEntity.ok(
                 "Etudiant supprimé"
@@ -292,38 +151,18 @@ public class EtudiantController {
 
     }
 
-
-
-
-
-
-
-    // =====================================================
-    // QR CODE
-    // =====================================================
-
-
     @GetMapping("/{id}/qr")
-    @PreAuthorize(
-            "hasAnyRole('ADMIN','SUPER_ADMIN','ETUDIANT')"
-    )
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN','ETUDIANT')")
     public ResponseEntity<ByteArrayResource> getQr(
-
             @PathVariable Long id
-
     ){
 
-
-        Etudiant etudiant =
-                etudiantService.getEtudiantById(id);
-
-
+        Etudiant etudiant = etudiantService.getEtudiantById(id);
 
         ByteArrayResource resource =
                 new ByteArrayResource(
                         etudiant.getQrCode()
                 );
-
 
 
         return ResponseEntity.ok()
@@ -341,26 +180,11 @@ public class EtudiantController {
 
     }
 
-
-
-
-
-
-
-    // =====================================================
-    // ETUDIANT CONNECTE
-    // =====================================================
-
-
     @GetMapping("/me")
-    @PreAuthorize(
-            "hasRole('ETUDIANT')"
-    )
+    @PreAuthorize("hasRole('ETUDIANT')")
     public ResponseEntity<Etudiant> myProfile(
-
             @RequestAttribute("userId")
             Long userId
-
     ){
 
         return ResponseEntity.ok(

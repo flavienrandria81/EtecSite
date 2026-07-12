@@ -156,12 +156,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
 
-
-
-
-
-
-
+    
     // Suppression
     @Override
     public void supprimerVideo(Long id) {

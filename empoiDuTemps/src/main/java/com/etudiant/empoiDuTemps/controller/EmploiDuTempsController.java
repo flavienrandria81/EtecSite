@@ -5,6 +5,7 @@ import com.etudiant.empoiDuTemps.service.EmploiDuTempsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -17,21 +18,25 @@ public class EmploiDuTempsController {
     private final EmploiDuTempsService service;
 
     @PostMapping("/save")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public EmploiDuTemps save(@RequestBody EmploiDuTemps emploiDuTemps) {
         return service.save(emploiDuTemps);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public Page<EmploiDuTemps> getAll(Pageable pageable) {
         return service.findAll(pageable);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public EmploiDuTemps getById(@PathVariable Long id) {
         return service.finById(id);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public EmploiDuTemps update(
             @PathVariable Long id,
             @RequestBody EmploiDuTemps emploiDuTemps
@@ -40,6 +45,7 @@ public class EmploiDuTempsController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }

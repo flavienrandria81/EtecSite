@@ -28,7 +28,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EtudiantService {
 
-
     private final EtudiantRepository etudiantRepository;
 
     private final UserClient userClient;
@@ -38,15 +37,8 @@ public class EtudiantService {
     private final EmailClient emailClient;
 
     private final QrCodeService qrCodeService;
-
-
     private static final String UPLOAD_DIR = "uploads/";
 
-
-
-    // =====================================================
-    // INSCRIPTION ETUDIANT
-    // =====================================================
 
     @Transactional
     public Etudiant registerEtudiantComplete(
@@ -56,14 +48,12 @@ public class EtudiantService {
             MultipartFile diplome
     ) {
 
-
         if(etudiantRepository.existsByMatricule(dto.getMatricule())){
 
             throw new RuntimeException(
                     "Matricule déjà utilisé"
             );
         }
-
 
         if(photo == null || photo.isEmpty()
                 || releve == null || releve.isEmpty()
@@ -74,23 +64,16 @@ public class EtudiantService {
             );
         }
 
-
-
         // Vérification données externes
 
         filiereClient.getFiliere(dto.getFiliereId());
-
         niveauClient.getNiveau(dto.getNiveauId());
-
         domaineClient.getDomaine(dto.getDomaineId());
-
-
 
         // Création User
 
         UserRegistrationDTO user =
                 new UserRegistrationDTO();
-
 
         user.setUsername(dto.getUsername());
         user.setNom(dto.getNom());
@@ -99,88 +82,28 @@ public class EtudiantService {
         user.setPassword(dto.getPassword());
         user.setRole("ETUDIANT");
 
-
-
-        UserDto savedUser =
-                userClient.register(user);
-
-
-
+        UserDto savedUser = userClient.register(user);
 
         try {
 
+            Etudiant etudiant = new Etudiant();
 
-            Etudiant etudiant =
-                    new Etudiant();
-
-
-            etudiant.setUserId(
-                    savedUser.getId()
-            );
-
-
-            etudiant.setMatricule(
-                    dto.getMatricule()
-            );
-
-
-            etudiant.setCin(
-                    dto.getCin()
-            );
-
-
-            etudiant.setAdresse(
-                    dto.getAdresse()
-            );
-
-
-            etudiant.setPhone(
-                    dto.getTelephone()
-            );
-
-
-            etudiant.setTypeFormation(
-                    dto.getTypeFormation()
-            );
-
-
-            etudiant.setFiliereId(
-                    dto.getFiliereId()
-            );
-
-
-            etudiant.setNiveauId(
-                    dto.getNiveauId()
-            );
-
-
-            etudiant.setDomaineId(
-                    dto.getDomaineId()
-            );
-
-
-            etudiant.setPhoto(
-                    saveFile(photo)
-            );
-
-
-            etudiant.setReleve(
-                    saveFile(releve)
-            );
-
-
-            etudiant.setDiplome(
-                    saveFile(diplome)
-            );
-
+            etudiant.setUserId(savedUser.getId());
+            etudiant.setMatricule(dto.getMatricule());
+            etudiant.setCin(dto.getCin());
+            etudiant.setAdresse(dto.getAdresse());
+            etudiant.setPhone(dto.getTelephone());
+            etudiant.setTypeFormation(dto.getTypeFormation());
+            etudiant.setFiliereId(dto.getFiliereId());
+            etudiant.setNiveauId(dto.getNiveauId());
+            etudiant.setDomaineId(dto.getDomaineId());
+            etudiant.setPhoto(saveFile(photo));
+            etudiant.setReleve(saveFile(releve));
+            etudiant.setDiplome(saveFile(diplome));
 
             // attente admin
 
-            etudiant.setStatut(
-                    StatutEtudiant.EN_ATTENTE
-            );
-
-
+            etudiant.setStatut(StatutEtudiant.EN_ATTENTE);
 
             return etudiantRepository.save(etudiant);
 
@@ -196,171 +119,90 @@ public class EtudiantService {
     }
 
 
-
-
-
-
-    // =====================================================
-    // VALIDATION ADMIN + QR CODE
-    // =====================================================
-
-
     @Transactional
     public Etudiant validerEtudiant(Long id){
 
-
-        Etudiant etudiant =
-                getEtudiantById(id);
+        Etudiant etudiant = getEtudiantById(id);
 
 
-
-        UserDto user =
-                userClient.getUserById(
+        UserDto user = userClient.getUserById(
                         etudiant.getUserId()
                 );
 
-
-        FiliereDto filiere =
-                filiereClient.getFiliere(
+        FiliereDto filiere = filiereClient.getFiliere(
                         etudiant.getFiliereId()
                 );
 
-
-        NiveauDto niveau =
-                niveauClient.getNiveau(
+        NiveauDto niveau = niveauClient.getNiveau(
                         etudiant.getNiveauId()
                 );
 
-
-        DomaineDto domaine =
-                domaineClient.getDomaine(
+        DomaineDto domaine = domaineClient.getDomaine(
                         etudiant.getDomaineId()
                 );
 
-
-
         String contenu =
 
-                "Matricule : "
-                        + etudiant.getMatricule()
+                "Matricule : " + etudiant.getMatricule()
 
-                        + "\nNom : "
-                        + user.getNom()
+                        + "\nNom : " + user.getNom()
 
-                        + "\nPrenom : "
-                        + user.getPrenom()
+                        + "\nPrenom : " + user.getPrenom()
 
-                        + "\nFiliere : "
-                        + filiere.getNom()
+                        + "\nFiliere : " + filiere.getNom()
 
-                        + "\nNiveau : "
-                        + niveau.getNom()
+                        + "\nNiveau : " + niveau.getNom()
 
-                        + "\nDomaine : "
-                        + domaine.getNom()
+                        + "\nDomaine : " + domaine.getNom()
 
-                        + "\nType Formation : "
-                        + etudiant.getTypeFormation();
-
+                        + "\nType Formation : " + etudiant.getTypeFormation();
 
 
         try {
-
-
             byte[] qr =
                     qrCodeService.generateQRCode(contenu);
-
-
 
             etudiant.setQrCode(qr);
 
 
-            etudiant.setStatut(
-                    StatutEtudiant.VALIDE
-            );
+            etudiant.setStatut(StatutEtudiant.VALIDE);
 
 
-
-            EmailRequest email =
-                    new EmailRequest();
-
+            EmailRequest email = new EmailRequest();
 
             email.setTo(user.getEmail());
 
-            email.setSubject(
-                    "Validation étudiant"
-            );
+            email.setSubject("Validation étudiant");
 
-
-            email.setMessage(
-                    "Votre inscription est validée"
-            );
-
+            email.setMessage("Votre inscription est validée");
 
             email.setAttachment(qr);
 
-
-            email.setFileName(
-                    "QR_"+etudiant.getMatricule()+".png"
-            );
-
+            email.setFileName("QR_"+etudiant.getMatricule()+".png");
 
             emailClient.sendEmail(email);
 
-
-
             return etudiantRepository.save(etudiant);
-
-
 
         }catch(Exception e){
 
-            throw new RuntimeException(
-                    "Erreur QR Code : "
-                            + e.getMessage()
-            );
+            throw new RuntimeException("Erreur QR Code : " + e.getMessage());
 
         }
 
     }
 
 
-
-
-
-
-    // =====================================================
-    // REFUS
-    // =====================================================
-
-
     @Transactional
     public Etudiant refuserEtudiant(Long id){
 
+        Etudiant etudiant = getEtudiantById(id);
 
-        Etudiant etudiant =
-                getEtudiantById(id);
-
-
-
-        etudiant.setStatut(
-                StatutEtudiant.REFUSE
-        );
-
-
+        etudiant.setStatut(StatutEtudiant.REFUSE);
 
         return etudiantRepository.save(etudiant);
 
     }
-
-
-
-
-
-
-    // =====================================================
-    // UPDATE
-    // =====================================================
 
 
     @Transactional
@@ -377,64 +219,40 @@ public class EtudiantService {
     ){
 
 
-        Etudiant etudiant =
-                getEtudiantById(id);
-
-
+        Etudiant etudiant = getEtudiantById(id);
 
         etudiant.setMatricule(matricule);
-
         etudiant.setCin(cin);
-
         etudiant.setAdresse(adresse);
-
         etudiant.setPhone(phone);
 
-
-
         if(typeFormation != null){
-
             etudiant.setTypeFormation(typeFormation);
-
         }
 
 
 
         try {
 
-
             if(photo != null && !photo.isEmpty()){
 
-                etudiant.setPhoto(
-                        saveFile(photo)
-                );
+                etudiant.setPhoto(saveFile(photo));
 
             }
-
 
             if(releve != null && !releve.isEmpty()){
 
-                etudiant.setReleve(
-                        saveFile(releve)
-                );
-
+                etudiant.setReleve(saveFile(releve));
             }
-
 
             if(diplome != null && !diplome.isEmpty()){
 
-                etudiant.setDiplome(
-                        saveFile(diplome)
-                );
+                etudiant.setDiplome(saveFile(diplome));
 
             }
 
-
         }catch(IOException e){
-
-            throw new RuntimeException(
-                    "Erreur fichier"
-            );
+            throw new RuntimeException("Erreur fichier");
         }
 
 
@@ -442,15 +260,6 @@ public class EtudiantService {
         return etudiantRepository.save(etudiant);
 
     }
-
-
-
-
-
-
-    // =====================================================
-    // DELETE
-    // =====================================================
 
 
     @Transactional
@@ -466,75 +275,33 @@ public class EtudiantService {
 
 
 
-
-
-
-
-    // =====================================================
-    // SAVE FILE
-    // =====================================================
-
-
     private String saveFile(MultipartFile file)
             throws IOException {
 
-
-        File dir =
-                new File(UPLOAD_DIR);
+        File dir = new File(UPLOAD_DIR);
 
 
 
         if(!dir.exists()){
-
             dir.mkdirs();
-
         }
 
 
+        String filename = UUID.randomUUID() +"_" +file.getOriginalFilename();
 
-        String filename =
-                UUID.randomUUID()
-                        +"_"
-                        +file.getOriginalFilename();
-
-
-
-        Path path =
-                Paths.get(
-                        UPLOAD_DIR,
-                        filename
-                );
-
-
-
-        Files.write(
-                path,
-                file.getBytes()
-        );
+        Path path = Paths.get(UPLOAD_DIR, filename);
+        Files.write(path, file.getBytes());
 
 
         return filename;
 
     }
 
-
-
-
-
-
-
-    // =====================================================
-    // GET
-    // =====================================================
-
-
     public Page<Etudiant> getAllEtudiants(Pageable pageable){
 
         return etudiantRepository.findAll(pageable);
 
     }
-
-
 
     public Etudiant getEtudiantById(Long id){
 
@@ -550,7 +317,6 @@ public class EtudiantService {
     }
 
 
-
     public Etudiant getByMatricule(String matricule){
 
 
@@ -564,11 +330,6 @@ public class EtudiantService {
                 );
 
     }
-
-
-
-
-
 
     public Map<String,Object> getEtudiantComplet(Long id){
 
@@ -605,12 +366,7 @@ public class EtudiantService {
 
     }
 
-    // =====================================================
-// TROUVER ETUDIANT PAR USER ID
-// =====================================================
-
     public Etudiant getByUserId(Long userId) {
-
 
         return etudiantRepository
                 .findByUserId(userId)
