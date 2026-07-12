@@ -4,7 +4,7 @@ package com.coursenligne.service.impl;
 import com.coursenligne.entity.Chapitre;
 import com.coursenligne.entity.CoursEnLigne;
 import com.coursenligne.repository.ChapitreRepository;
-import com.coursenligne.repository.CourEnLigneRepository;
+import com.coursenligne.repository.CoursEnLigneRepository;
 import com.coursenligne.service.ChapitreService;
 
 
@@ -25,7 +25,7 @@ public class ChapitreServiceImpl implements ChapitreService {
 
     private final ChapitreRepository chapitreRepository;
 
-    private final CourEnLigneRepository coursRepository;
+    private final CoursEnLigneRepository coursRepository;
 
 
 

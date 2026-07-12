@@ -1,16 +1,16 @@
 package com.coursenligne.service.impl;
 
-
-
 import com.coursenligne.client.EnseignantClient;
 import com.coursenligne.client.FiliereClient;
 import com.coursenligne.client.MatiereClient;
 import com.coursenligne.client.NiveauClient;
+
 import com.coursenligne.dto.*;
+
 
 import com.coursenligne.entity.CoursEnLigne;
 
-import com.coursenligne.repository.CourEnLigneRepository;
+import com.coursenligne.repository.CoursEnLigneRepository;
 import com.coursenligne.service.CoursEnLigneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,12 +23,18 @@ import org.springframework.stereotype.Service;
 public class CoursEnLigneServiceImpl implements CoursEnLigneService {
 
 
-    private final CourEnLigneRepository repository;
+    private final CoursEnLigneRepository repository;
+
 
     private final EnseignantClient enseignantClient;
+
     private final MatiereClient matiereClient;
+
     private final FiliereClient filiereClient;
+
     private final NiveauClient niveauClient;
+
+
 
 
 
@@ -190,9 +196,14 @@ public class CoursEnLigneServiceImpl implements CoursEnLigneService {
 
 
 
-        CoursResponse response = new CoursResponse();
+        CoursResponse response =
+                new CoursResponse();
 
-        response.setId(cours.getId());
+
+        response.setId(
+                cours.getId()
+        );
+
 
         response.setTitre(
                 cours.getTitre()

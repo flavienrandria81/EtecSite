@@ -57,6 +57,7 @@ public class EtudiantController {
                         photo,
                         releve,
                         diplome
+               
                 );
 
         return ResponseEntity.ok(etudiant);

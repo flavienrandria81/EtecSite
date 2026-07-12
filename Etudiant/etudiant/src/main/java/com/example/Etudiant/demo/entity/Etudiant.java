@@ -26,6 +26,8 @@ public class Etudiant {
     @Enumerated(EnumType.STRING)
     private StatutEtudiant statut;
 
+    private String nom;
+    private String prenom;
     @Column(unique = true)
     private String matricule;
     private String cin;

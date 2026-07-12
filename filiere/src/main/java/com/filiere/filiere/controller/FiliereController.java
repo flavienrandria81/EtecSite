@@ -5,7 +5,7 @@ import com.filiere.filiere.service.FiliereService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,34 +16,71 @@ public class FiliereController {
     private final FiliereService service;
 
 
+    // Accessible ADMIN seulement
     @PostMapping("/save")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public Filiere save(@RequestBody Filiere filiere) {
-        return service.save(filiere);
+    public ResponseEntity<?> save(
+            @RequestHeader("X-Role") String role,
+            @RequestBody Filiere filiere
+    ) {
+
+        if (!role.equals("ADMIN") && !role.equals("SUPER_ADMIN")) {
+            return ResponseEntity.status(403)
+                    .body("Accès refusé");
+        }
+
+        return ResponseEntity.ok(
+                service.save(filiere)
+        );
     }
 
+    // Accessible à tous
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public Page<Filiere> getAll(Pageable pageable) {
         return service.findAll(pageable);
     }
 
+
+    // Accessible à tous
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
     public Filiere getById(@PathVariable Long id) {
         return service.findById(id);
     }
 
+
+    // Accessible ADMIN seulement
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
-    public Filiere update(@PathVariable Long id,
-                          @RequestBody Filiere filiere) {
-        return service.update(id, filiere);
+    public ResponseEntity<?> update(
+            @RequestHeader("X-Role") String role,
+            @PathVariable Long id,
+            @RequestBody Filiere filiere
+    ) {
+
+        if (!role.equals("ADMIN")) {
+            return ResponseEntity.status(403)
+                    .body("Vous n'avez pas l'autorisation");
+        }
+
+        return ResponseEntity.ok(
+                service.update(id, filiere)
+        );
     }
 
+
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(
+            @RequestHeader("X-Role") String role,
+            @PathVariable Long id
+    ) {
+
+        if (!role.equals("SUPER_ADMIN")) {
+            return ResponseEntity.status(403)
+                    .body("Réservé au Super Administrateur");
+        }
+
         service.delete(id);
+
+        return ResponseEntity.ok(
+                "Filière supprimée"
+        );
     }
 }

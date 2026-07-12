@@ -20,6 +20,9 @@ public class Video {
 
     private Integer duree;
 
+    @Enumerated(EnumType.STRING)
+    private TypeVideo type;
+
     @ManyToOne
     @JoinColumn(name="leçon_id")
     private Leçon leçon;

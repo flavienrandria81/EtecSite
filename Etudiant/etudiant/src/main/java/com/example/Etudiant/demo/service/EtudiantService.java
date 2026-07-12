@@ -75,8 +75,8 @@ public class EtudiantService {
         UserRegistrationDTO user =
                 new UserRegistrationDTO();
 
-        user.setUsername(dto.getUsername());
-        user.setNom(dto.getNom());
+        /*user.setUsername(dto.getUsername());
+        user.setNom(dto.getNom());*/
         user.setPrenom(dto.getPrenom());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
@@ -88,6 +88,8 @@ public class EtudiantService {
 
             Etudiant etudiant = new Etudiant();
 
+            etudiant.setNom(dto.getNom());
+            etudiant.setPrenom(dto.getPrenom());
             etudiant.setUserId(savedUser.getId());
             etudiant.setMatricule(dto.getMatricule());
             etudiant.setCin(dto.getCin());
@@ -122,76 +124,163 @@ public class EtudiantService {
     @Transactional
     public Etudiant validerEtudiant(Long id){
 
-        Etudiant etudiant = getEtudiantById(id);
+
+        Etudiant etudiant =
+                getEtudiantById(id);
 
 
-        UserDto user = userClient.getUserById(
+
+        // récupérer email seulement
+        UserDto user =
+                userClient.getUserById(
                         etudiant.getUserId()
                 );
 
-        FiliereDto filiere = filiereClient.getFiliere(
+
+
+        FiliereDto filiere =
+                filiereClient.getFiliere(
                         etudiant.getFiliereId()
                 );
 
-        NiveauDto niveau = niveauClient.getNiveau(
+
+
+        NiveauDto niveau =
+                niveauClient.getNiveau(
                         etudiant.getNiveauId()
                 );
 
-        DomaineDto domaine = domaineClient.getDomaine(
+
+
+        DomaineDto domaine =
+                domaineClient.getDomaine(
                         etudiant.getDomaineId()
                 );
 
+
+
+
         String contenu =
 
-                "Matricule : " + etudiant.getMatricule()
 
-                        + "\nNom : " + user.getNom()
+                "Matricule : "
+                        + etudiant.getMatricule()
 
-                        + "\nPrenom : " + user.getPrenom()
 
-                        + "\nFiliere : " + filiere.getNom()
+                        + "\nNom : "
+                        + etudiant.getNom()
 
-                        + "\nNiveau : " + niveau.getNom()
 
-                        + "\nDomaine : " + domaine.getNom()
 
-                        + "\nType Formation : " + etudiant.getTypeFormation();
+                        + "\nPrenom : "
+                        + etudiant.getPrenom()
+
+
+
+                        + "\nFiliere : "
+                        + filiere.getNom()
+
+
+
+                        + "\nNiveau : "
+                        + niveau.getNom()
+
+
+
+                        + "\nDomaine : "
+                        + domaine.getNom()
+
+
+
+                        + "\nFormation : "
+                        + etudiant.getTypeFormation();
+
 
 
         try {
+
+
             byte[] qr =
-                    qrCodeService.generateQRCode(contenu);
+                    qrCodeService.generateQRCode(
+                            contenu
+                    );
+
+
 
             etudiant.setQrCode(qr);
 
 
-            etudiant.setStatut(StatutEtudiant.VALIDE);
+
+            etudiant.setStatut(
+                    StatutEtudiant.VALIDE
+            );
 
 
-            EmailRequest email = new EmailRequest();
 
-            email.setTo(user.getEmail());
+            EmailRequest email =
+                    new EmailRequest();
 
-            email.setSubject("Validation étudiant");
 
-            email.setMessage("Votre inscription est validée");
+
+            email.setTo(
+                    user.getEmail()
+            );
+
+
+
+            email.setSubject(
+                    "Validation étudiant"
+            );
+
+
+
+            email.setMessage(
+
+                    "Bonjour "
+                            + etudiant.getPrenom()
+                            + " "
+                            + etudiant.getNom()
+                            + "\n\n"
+                            + "Votre inscription est validée."
+                            + "\nVotre QR Code est attaché."
+
+            );
+
+
 
             email.setAttachment(qr);
 
-            email.setFileName("QR_"+etudiant.getMatricule()+".png");
+
+
+            email.setFileName(
+                    "QR_"
+                            + etudiant.getMatricule()
+                            + ".png"
+            );
+
+
 
             emailClient.sendEmail(email);
 
-            return etudiantRepository.save(etudiant);
+
+
+            return etudiantRepository.save(
+                    etudiant
+            );
+
+
 
         }catch(Exception e){
 
-            throw new RuntimeException("Erreur QR Code : " + e.getMessage());
+
+            throw new RuntimeException(
+                    "Erreur validation : "
+                            + e.getMessage()
+            );
 
         }
 
     }
-
 
     @Transactional
     public Etudiant refuserEtudiant(Long id){
