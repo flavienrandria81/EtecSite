@@ -250,12 +250,8 @@ public class UserController {
 
 
         }catch(AuthenticationException e){
-
-
-            log.error(
-                    "Erreur login : {}",
-                    e.getMessage()
-            );
+            e.printStackTrace();
+        }
 
 
             return ResponseEntity
@@ -264,7 +260,7 @@ public class UserController {
 
         }
 
-    }
+
 
 
 

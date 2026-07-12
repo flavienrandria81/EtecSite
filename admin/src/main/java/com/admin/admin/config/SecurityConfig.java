@@ -25,6 +25,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Toutes les routes d'administration nécessitent d'être authentifié par JWT
                         .requestMatchers("/api/admins/**").authenticated()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 // On applique le filtre JWT avant le filtre de base de Spring Security
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

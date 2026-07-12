@@ -44,6 +44,11 @@ public class SecurityConfig {
                                         .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/etudiant/**").hasRole("ETUDIANT")
                                 .requestMatchers("/api/enseignant/**").hasRole("ENSEIGNANT")
+                                        .requestMatchers(
+                                                "/v3/api-docs/**",
+                                                "/swagger-ui/**",
+                                                "/swagger-ui.html"
+                                        ).permitAll()
                                 .anyRequest().authenticated())
 
                 .addFilterBefore(new JwtFilter(customUserDetailsService, jwtUtils), UsernamePasswordAuthenticationFilter.class)
