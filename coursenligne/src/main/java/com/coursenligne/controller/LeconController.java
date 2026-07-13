@@ -1,17 +1,14 @@
 package com.coursenligne.controller;
 
 
-import com.coursenligne.entity.Ressource;
-import com.coursenligne.service.RessourceService;
+import com.coursenligne.entity.Lecon;
 
-
+import com.coursenligne.service.LeconService;
 import lombok.RequiredArgsConstructor;
 
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -24,118 +21,88 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/ressources")
+@RequestMapping("/lecons")
 @RequiredArgsConstructor
-public class RessourceController {
+public class LeconController {
 
 
 
-    private final RessourceService ressourceService;
+    private final LeconService leconService;
 
 
 
 
 
     @PostMapping
-    public ResponseEntity<Ressource> creer(
-            @RequestBody Ressource ressource
+    public ResponseEntity<Lecon> creer(
+            @RequestBody Lecon lecon
     ){
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(
-                        ressourceService.creerRessource(
-                                ressource
-                        )
+                        leconService.creerLecon(lecon)
                 );
     }
 
 
 
-
-
-
-
     @GetMapping
-    public ResponseEntity<Page<Ressource>> getAll(
-            Pageable pageable
-    ){
+    public ResponseEntity<Page<Lecon>> getAll(Pageable pageable){
 
         return ResponseEntity.ok(
-                ressourceService.getAll(pageable)
+                leconService.getAll(pageable)
         );
     }
 
 
-
-
-
-
-
-
     @GetMapping("/{id}")
-    public ResponseEntity<Ressource> getById(
+    public ResponseEntity<Lecon> getById(
             @PathVariable Long id
     ){
 
         return ResponseEntity.ok(
-                ressourceService.getById(id)
+                leconService.getById(id)
         );
     }
 
 
 
 
-
-
-
-
-    @GetMapping("/lecon/{leconId}")
-    public ResponseEntity<List<Ressource>> getByLecon(
-            @PathVariable Long leconId
+    @GetMapping("/chapitre/{chapitreId}")
+    public ResponseEntity<List<Lecon>> getByChapitre(
+            @PathVariable Long chapitreId
     ){
 
         return ResponseEntity.ok(
-                ressourceService.getByLeconId(
-                        leconId
+                leconService.getByChapitreId(
+                        chapitreId
                 )
         );
     }
-
-
-
-
-
 
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Ressource> modifier(
+    public ResponseEntity<Lecon> modifier(
             @PathVariable Long id,
-            @RequestBody Ressource ressource
+            @RequestBody Lecon lecon
     ){
 
         return ResponseEntity.ok(
-                ressourceService.modifierRessource(
+                leconService.modifierLecon(
                         id,
-                        ressource
+                        lecon
                 )
         );
     }
-
-
-
-
-
-
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(
             @PathVariable Long id
     ){
 
-        ressourceService.supprimerRessource(id);
+        leconService.supprimerLecon(id);
 
 
         return ResponseEntity.noContent()

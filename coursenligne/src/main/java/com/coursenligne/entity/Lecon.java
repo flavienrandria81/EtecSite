@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Leçon {
+public class Lecon {
 
 
     @Id
@@ -34,15 +34,9 @@ public class Leçon {
     private Chapitre chapitre;
 
 
-    @OneToMany(
-            mappedBy="leçon",
-            cascade=CascadeType.ALL
-    )
-    private List<Document> documents;
-
 
     @OneToMany(
-            mappedBy="leçon",
+            mappedBy="lecon",
             cascade=CascadeType.ALL
     )
     private List<Video> videos;

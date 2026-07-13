@@ -32,6 +32,6 @@ public class Chapitre {
             mappedBy="chapitre",
             cascade=CascadeType.ALL
     )
-    private List<Leçon> leçons;
+    private List<Lecon> lecons;
 
 }

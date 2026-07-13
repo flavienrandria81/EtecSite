@@ -14,7 +14,7 @@ public interface RessourceRepository
 
 
     // Trouver les ressources d'une leçon
-    List<Ressource> findByLeçonId(Long leçonId);
+    List<Ressource> findByLeconId(Long leconId);
 
 
 

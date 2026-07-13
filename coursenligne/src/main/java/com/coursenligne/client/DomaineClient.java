@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface DomaineClient {
 
     @GetMapping("/api/domaines/{id}")
-    DomaineDTO domaineById(@PathVariable Long id);
+    DomaineDTO getDomaineById(@PathVariable Long id);
 }

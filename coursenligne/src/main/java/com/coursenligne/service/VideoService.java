@@ -6,23 +6,37 @@ import com.coursenligne.entity.Video;
 import java.util.List;
 
 
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+
+
 public interface VideoService {
 
-    // Créer une vidéo
+
     Video creerVideo(Video video);
-    // Modifier une vidéo
+
+
+    Video uploadVideo(
+            String titre,
+            Integer duree,
+            Long leconId,
+            MultipartFile file
+    ) throws IOException;
+
+
+
     Video modifierVideo(Long id, Video video);
 
-    // Liste des vidéos
+
     List<Video> getAll();
 
-    // Trouver une vidéo
+
     Video getById(Long id);
 
-    // Vidéos d'une leçon
-    List<Video> getByLeconId(Long leçonId);
 
-    // Supprimer
+    List<Video> getByLeconId(Long leconId);
+
+
     void supprimerVideo(Long id);
 
 }

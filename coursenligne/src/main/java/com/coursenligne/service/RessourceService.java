@@ -2,6 +2,8 @@ package com.coursenligne.service;
 
 
 import com.coursenligne.entity.Ressource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ public interface RessourceService {
 
 
     // Récupérer toutes les ressources
-    List<Ressource> getAll();
+    Page<Ressource> getAll(Pageable pageable);
 
 
 
@@ -33,7 +35,7 @@ public interface RessourceService {
 
 
     // Ressources d'une leçon
-    List<Ressource> getByLeconId(Long leçonId);
+    List<Ressource> getByLeconId(Long leconId);
 
 
 

@@ -1,23 +1,34 @@
 package com.coursenligne.service.impl;
 
 
-import com.coursenligne.entity.Leçon;
-import com.coursenligne.entity.Video;
 
-import com.coursenligne.repository.LeçonRepository;
+import com.coursenligne.entity.Lecon;
+import com.coursenligne.entity.TypeVideo;
+import com.coursenligne.entity.Video;
+import com.coursenligne.repository.LeconRepository;
 import com.coursenligne.repository.VideoRepository;
 
 import com.coursenligne.service.VideoService;
 
 
+import jakarta.persistence.EntityNotFoundException;
+
+
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.util.List;
+import java.util.UUID;
 
 
 
@@ -28,79 +39,164 @@ public class VideoServiceImpl implements VideoService {
 
     private final VideoRepository videoRepository;
 
-    private final LeçonRepository leçonRepository;
+    private final LeconRepository leconRepository;
+
+
+    private final String uploadDir =
+            "uploads/videos/";
 
 
 
-
-    // Création vidéo
     @Override
     public Video creerVideo(Video video) {
 
 
-        Long leçonId =
-                video.getLeçon()
-                        .getId();
+        if(video.getLecon()==null
+                || video.getLecon().getId()==null){
+
+            throw new IllegalArgumentException(
+                    "La leçon est obligatoire"
+            );
+        }
+
+
+        Lecon lecon =
+                leconRepository.findById(
+                                video.getLecon().getId()
+                        )
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Leçon introuvable"
+                                )
+                        );
+
+
+        video.setLecon(lecon);
+
+
+        return videoRepository.save(video);
+
+    }
 
 
 
-        Leçon leçon =
-                leçonRepository.findById(leçonId)
-                        .orElseThrow(
-                                () -> new RuntimeException(
+
+
+
+    /*
+       Upload d'une vidéo locale
+    */
+
+    public Video uploadVideo(
+            String titre,
+            Integer duree,
+            Long leconId,
+            MultipartFile file
+    ) throws IOException {
+
+
+
+        Lecon lecon =
+                leconRepository.findById(leconId)
+
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
                                         "Leçon introuvable"
                                 )
                         );
 
 
 
-        video.setLeçon(leçon);
+        Path dossier =
+                Paths.get(uploadDir);
+
+
+
+        if(!Files.exists(dossier)){
+            Files.createDirectories(dossier);
+        }
+
+
+
+        String nomFichier =
+                UUID.randomUUID()
+                        +"_"
+                        +file.getOriginalFilename();
+
+
+
+        Path chemin =
+                dossier.resolve(nomFichier);
+
+
+
+        Files.copy(
+                file.getInputStream(),
+                chemin
+        );
+
+
+
+        Video video = new Video();
+
+
+        video.setTitre(titre);
+
+        video.setDuree(duree);
+
+        video.setType(TypeVideo.UPLOAD);
+
+
+        video.setUrlVideo(
+                "/uploads/videos/"
+                        +nomFichier
+        );
+
+
+        video.setLecon(lecon);
 
 
 
         return videoRepository.save(video);
+
     }
 
 
-
-
-
-
-
-    // Modification
     @Override
     public Video modifierVideo(
             Long id,
-            Video video) {
+            Video video
+    ){
 
 
-        Video ancienne =
-                videoRepository.findById(id)
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Vidéo introuvable"
-                                )
-                        );
+        Video existante =
+                getById(id);
 
 
 
-        ancienne.setTitre(
+        existante.setTitre(
                 video.getTitre()
         );
 
 
-        ancienne.setUrlVideo(
-                video.getUrlVideo()
-        );
-
-
-        ancienne.setDuree(
+        existante.setDuree(
                 video.getDuree()
         );
 
 
+        existante.setUrlVideo(
+                video.getUrlVideo()
+        );
 
-        return videoRepository.save(ancienne);
+
+        existante.setType(
+                video.getType()
+        );
+
+
+
+        return videoRepository.save(existante);
+
     }
 
 
@@ -109,10 +205,8 @@ public class VideoServiceImpl implements VideoService {
 
 
 
-
-    // Toutes les vidéos
     @Override
-    public List<Video> getAll() {
+    public List<Video> getAll(){
 
         return videoRepository.findAll();
 
@@ -124,43 +218,49 @@ public class VideoServiceImpl implements VideoService {
 
 
 
-
-    // Une vidéo
     @Override
-    public Video getById(Long id) {
+    public Video getById(Long id){
 
 
         return videoRepository.findById(id)
-                .orElseThrow(
-                        () -> new RuntimeException(
+
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
                                 "Vidéo introuvable"
                         )
                 );
 
     }
 
+
+
+
+
+
+
+
     @Override
-    public List<Video> getByLeconId(Long leçonId) {
-        return List.of();
-    }
-
-
-    // Vidéos d'une leçon
-    public Page<Video> getByLeconId(
-            Long leçonId, Pageable pageable) {
-
+    public List<Video> getByLeconId(
+            Long leconId
+    ){
 
         return videoRepository
-                .findByLeçonId(leçonId, pageable);
+                .findByLeconId(
+                        leconId,
+                        Pageable.unpaged()
+                )
+                .getContent();
 
     }
 
 
-    
-    // Suppression
-    @Override
-    public void supprimerVideo(Long id) {
 
+
+
+
+
+    @Override
+    public void supprimerVideo(Long id){
 
         Video video =
                 getById(id);

@@ -5,6 +5,7 @@ import com.dom.domaine.service.DomaineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,10 +16,20 @@ public class DomaineController {
     private final DomaineService service;
 
     @PostMapping("/save")
-    public Domaine save(@RequestBody Domaine domaine) {
-        return service.save(domaine);
-    }
+    public ResponseEntity<?> save(
+            @RequestHeader("X-Role") String role,
+            @RequestBody Domaine domaine
+    ) {
 
+        if (!role.equals("ADMIN") && !role.equals("SUPER_ADMIN")) {
+            return ResponseEntity.status(403)
+                    .body("Accès refusé");
+        }
+
+        return ResponseEntity.ok(
+                service.save(domaine)
+        );
+    }
     @GetMapping
     public Page<Domaine> getAll(Pageable pageable) {
         return service.findAll(pageable);
@@ -30,13 +41,37 @@ public class DomaineController {
     }
 
     @PutMapping("/{id}")
-    public Domaine update(@PathVariable Long id,
-                          @RequestBody Domaine domaine) {
-        return service.update(id, domaine);
+    public ResponseEntity<?> update(
+            @RequestHeader("X-Role") String role,
+            @PathVariable Long id,
+            @RequestBody Domaine domaine
+    ) {
+
+        if (!role.equals("ADMIN") && !role.equals("SUPER_ADMIN")) {
+            return ResponseEntity.status(403)
+                    .body("Vous n'avez pas l'autorisation");
+        }
+
+        return ResponseEntity.ok(
+                service.update(id, domaine)
+        );
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(
+            @RequestHeader("X-Role") String role,
+            @PathVariable Long id
+    ) {
+
+        if (!role.equals("SUPER_ADMIN")) {
+            return ResponseEntity.status(403)
+                    .body("Réservé au Super Administrateur");
+        }
+
         service.delete(id);
+
+        return ResponseEntity.ok(
+                "Filière supprimée"
+        );
     }
 }

@@ -1,26 +1,23 @@
 package com.coursenligne.service.impl;
 
-
 import com.coursenligne.entity.Chapitre;
 import com.coursenligne.entity.CoursEnLigne;
 import com.coursenligne.repository.ChapitreRepository;
 import com.coursenligne.repository.CoursEnLigneRepository;
 import com.coursenligne.service.ChapitreService;
 
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-
 import java.util.List;
-
 
 
 @Service
 @RequiredArgsConstructor
 public class ChapitreServiceImpl implements ChapitreService {
-
 
 
     private final ChapitreRepository chapitreRepository;
@@ -29,24 +26,25 @@ public class ChapitreServiceImpl implements ChapitreService {
 
 
 
-
-
-    // Création chapitre
     @Override
-    public Chapitre creerChapitre(
-            Chapitre chapitre) {
+    public Chapitre creerChapitre(Chapitre chapitre) {
 
 
-        Long coursId =
-                chapitre.getCours()
-                        .getId();
+        if(chapitre.getCours() == null
+                || chapitre.getCours().getId() == null){
 
+            throw new IllegalArgumentException(
+                    "Le cours est obligatoire"
+            );
+        }
 
 
         CoursEnLigne cours =
-                coursRepository.findById(coursId)
-                        .orElseThrow(
-                                () -> new RuntimeException(
+                coursRepository.findById(
+                                chapitre.getCours().getId()
+                        )
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
                                         "Cours introuvable"
                                 ));
 
@@ -60,108 +58,76 @@ public class ChapitreServiceImpl implements ChapitreService {
 
 
 
-
-
-    // Modification
     @Override
-    public Chapitre modifierChapitre(
-            Long id,
-            Chapitre chapitre) {
+    public Chapitre modifierChapitre(Long id, Chapitre chapitre) {
 
 
-        Chapitre ancien =
-                chapitreRepository.findById(id)
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Chapitre introuvable"
-                                ));
+        Chapitre existant =
+                getById(id);
 
 
-
-        ancien.setTitre(
+        existant.setTitre(
                 chapitre.getTitre()
         );
 
 
-        ancien.setDescription(
+        existant.setDescription(
                 chapitre.getDescription()
         );
 
 
-        ancien.setOrdre(
+        existant.setOrdre(
                 chapitre.getOrdre()
         );
 
 
-
-        return chapitreRepository.save(ancien);
+        return chapitreRepository.save(existant);
     }
 
 
 
 
-
-
-
-    // Tous les chapitres
     @Override
     public List<Chapitre> getAll() {
 
         return chapitreRepository.findAll();
-
     }
 
 
 
 
-
-
-
-
-    // Un chapitre par id
     @Override
     public Chapitre getById(Long id) {
 
 
         return chapitreRepository.findById(id)
-                .orElseThrow(
-                        () -> new RuntimeException(
-                                "Chapitre introuvable"
-                        ));
 
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Chapitre introuvable avec id : "
+                                        + id
+                        )
+                );
     }
 
 
 
 
 
-
-
-
-    // Chapitres d'un cours
     @Override
-    public List<Chapitre> getByCoursId(
-            Long coursId) {
+    public List<Chapitre> getByCoursId(Long coursId) {
 
 
         return chapitreRepository
-                .findByCoursIdOrderByOrdreAsc(
-                        coursId
-                );
-
+                .findByCoursIdOrderByOrdreAsc(coursId);
     }
 
 
 
 
 
-
-
-
-    // Suppression
     @Override
-    public void supprimerChapitre(
-            Long id) {
+    public void supprimerChapitre(Long id) {
 
 
         Chapitre chapitre =
@@ -169,7 +135,6 @@ public class ChapitreServiceImpl implements ChapitreService {
 
 
         chapitreRepository.delete(chapitre);
-
     }
 
 }

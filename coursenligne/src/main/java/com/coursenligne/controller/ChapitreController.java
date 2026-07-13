@@ -17,7 +17,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/chapitres")
+@RequestMapping("/chapitres")
 @RequiredArgsConstructor
 public class ChapitreController {
 
@@ -27,55 +27,21 @@ public class ChapitreController {
 
 
 
-
-    // =========================
-    // Créer un chapitre
-    // =========================
     @PostMapping
-    public ResponseEntity<Chapitre> creerChapitre(
+    public ResponseEntity<Chapitre> creer(
             @RequestBody Chapitre chapitre
     ){
 
-        Chapitre nouveau =
-                chapitreService.creerChapitre(chapitre);
-
-
-        return new ResponseEntity<>(
-                nouveau,
-                HttpStatus.CREATED
-        );
-    }
-
-
-
-
-
-    // =========================
-    // Modifier un chapitre
-    // =========================
-    @PutMapping("/{id}")
-    public ResponseEntity<Chapitre> modifierChapitre(
-            @PathVariable Long id,
-            @RequestBody Chapitre chapitre
-    ){
-
-        Chapitre modifier =
-                chapitreService.modifierChapitre(
-                        id,
-                        chapitre
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(
+                        chapitreService.creerChapitre(chapitre)
                 );
-
-
-        return ResponseEntity.ok(modifier);
     }
 
 
 
 
-
-    // =========================
-    // Récupérer tous les chapitres
-    // =========================
     @GetMapping
     public ResponseEntity<List<Chapitre>> getAll(){
 
@@ -87,10 +53,6 @@ public class ChapitreController {
 
 
 
-
-    // =========================
-    // Récupérer un chapitre par ID
-    // =========================
     @GetMapping("/{id}")
     public ResponseEntity<Chapitre> getById(
             @PathVariable Long id
@@ -105,11 +67,8 @@ public class ChapitreController {
 
 
 
-    // =========================
-    // Récupérer les chapitres d'un cours
-    // =========================
     @GetMapping("/cours/{coursId}")
-    public ResponseEntity<List<Chapitre>> getByCoursId(
+    public ResponseEntity<List<Chapitre>> getByCours(
             @PathVariable Long coursId
     ){
 
@@ -122,16 +81,31 @@ public class ChapitreController {
 
 
 
-    // =========================
-    // Supprimer un chapitre
-    // =========================
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Chapitre> modifier(
+            @PathVariable Long id,
+            @RequestBody Chapitre chapitre
+    ){
+
+        return ResponseEntity.ok(
+                chapitreService.modifierChapitre(
+                        id,
+                        chapitre
+                )
+        );
+    }
+
+
+
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(
             @PathVariable Long id
     ){
 
         chapitreService.supprimerChapitre(id);
-
 
         return ResponseEntity.noContent()
                 .build();

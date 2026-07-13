@@ -4,8 +4,9 @@ import com.coursenligne.entity.CoursEnLigne;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CoursEnLigneRepository extends JpaRepository<CoursEnLigne, Long> {
-
-    Page<CoursEnLigne> findByMatiereId(Long matiereId, Pageable pageable);
+@Repository
+public interface CoursEnLigneRepository extends JpaRepository<CoursEnLigne,Long> {
+    Page<CoursEnLigne> findByActifTrue(Pageable pageable);
 }

@@ -18,12 +18,12 @@ public class CoursEnLigne {
 
     private String titre;
 
-    @Column(length = 2000)
+    @Column(length = 3000)
     private String description;
 
-    private Long matiereId;
-
     private Long enseignantId;
+
+    private Long matiereId;
 
     private Long filiereId;
 
@@ -31,11 +31,12 @@ public class CoursEnLigne {
 
     private Long domaineId;
 
+    private Boolean actif = true;
+
     @OneToMany(
             mappedBy = "cours",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-
     private List<Chapitre> chapitres;
-    private boolean actif;
 }

@@ -1,17 +1,20 @@
 package com.coursenligne.service.impl;
 
-
-import com.coursenligne.entity.Leçon;
+import com.coursenligne.entity.Lecon;
 import com.coursenligne.entity.Ressource;
-
-import com.coursenligne.repository.LeçonRepository;
+import com.coursenligne.repository.LeconRepository;
 import com.coursenligne.repository.RessourceRepository;
-
 import com.coursenligne.service.RessourceService;
+
+
+import jakarta.persistence.EntityNotFoundException;
 
 
 import lombok.RequiredArgsConstructor;
 
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
@@ -30,44 +33,49 @@ public class RessourceServiceImpl
 
     private final RessourceRepository ressourceRepository;
 
-    private final LeçonRepository leçonRepository;
+    private final LeconRepository leconRepository;
 
 
 
 
 
-
-    // Création ressource
     @Override
     public Ressource creerRessource(
-            Ressource ressource) {
+            Ressource ressource
+    ) {
+
+
+        if(ressource.getLecon() == null
+                || ressource.getLecon().getId() == null){
+
+            throw new IllegalArgumentException(
+                    "La leçon est obligatoire"
+            );
+        }
 
 
 
-        Long leçonId =
-                ressource.getLeçon()
-                        .getId();
-
-
-
-        Leçon leçon =
-                leçonRepository.findById(leçonId)
-                        .orElseThrow(
-                                () -> new RuntimeException(
+        Lecon lecon =
+                leconRepository.findById(
+                                ressource.getLecon().getId()
+                        )
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
                                         "Leçon introuvable"
                                 )
                         );
 
 
 
-        ressource.setLeçon(leçon);
+        ressource.setLecon(lecon);
 
 
 
-        // Date automatique
-        ressource.setDateAjout(
-                LocalDate.now()
-        );
+        if(ressource.getDateAjout() == null){
+            ressource.setDateAjout(
+                    LocalDate.now()
+            );
+        }
 
 
 
@@ -76,72 +84,80 @@ public class RessourceServiceImpl
     }
 
 
-    
 
-    // Modifier
+
+
+
     @Override
     public Ressource modifierRessource(
             Long id,
-            Ressource ressource) {
+            Ressource ressource
+    ) {
+
+
+        Ressource existante =
+                getById(id);
 
 
 
-        Ressource ancienne =
-                ressourceRepository.findById(id)
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Ressource introuvable"
-                                )
-                        );
-
-
-
-        ancienne.setNom(
+        existante.setNom(
                 ressource.getNom()
         );
 
 
-        ancienne.setUrl(
+        existante.setUrl(
                 ressource.getUrl()
         );
 
 
-        ancienne.setTaille(
+        existante.setTaille(
                 ressource.getTaille()
         );
 
 
-        ancienne.setType(
+        existante.setType(
                 ressource.getType()
         );
 
 
 
-        return ressourceRepository.save(ancienne);
+        return ressourceRepository.save(existante);
 
     }
 
 
 
-    // Toutes les ressources
+
+
+
+
+
     @Override
-    public List<Ressource> getAll() {
+    public Page<Ressource> getAll(
+            Pageable pageable
+    ) {
 
-
-        return ressourceRepository.findAll();
+        return ressourceRepository.findAll(pageable);
 
     }
 
 
-    // Une ressource
+
+
+
+
+
+
     @Override
     public Ressource getById(Long id) {
 
 
         return ressourceRepository.findById(id)
-                .orElseThrow(
-                        () -> new RuntimeException(
-                                "Ressource introuvable"
+
+                .orElseThrow(() ->
+                        new EntityNotFoundException(
+                                "Ressource introuvable avec id : "
+                                        + id
                         )
                 );
 
@@ -150,25 +166,28 @@ public class RessourceServiceImpl
 
 
 
-
-    // Ressources d'une leçon
     @Override
     public List<Ressource> getByLeconId(
-            Long leçonId) {
+            Long leconId
+    ) {
 
 
         return ressourceRepository
-                .findByLeçonId(leçonId);
+                .findByLeconId(leconId);
 
     }
 
 
 
 
-    // Supprimer
+
+
+
+
     @Override
     public void supprimerRessource(
-            Long id) {
+            Long id
+    ) {
 
 
         Ressource ressource =
