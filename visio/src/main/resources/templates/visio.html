@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visio - Conférence en ligne</title>
+    <link rel="stylesheet" th:href="@{/css/visio.css}">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="navbar-inner">
+        <h1 class="brand">&#128248; Visio ETEC</h1>
+        <span class="subtitle">Conférences entre enseignants et étudiants</span>
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="grid">
+
+        <section class="card">
+            <h2>Créer une conférence</h2>
+            <form id="createForm" class="form">
+                <label>
+                    Titre de la conférence
+                    <input type="text" id="titre" name="titre" required
+                           placeholder="Ex : Cours de mathématiques - Chapitre 3">
+                </label>
+
+                <label>
+                    Description
+                    <textarea id="description" name="description" rows="3"
+                              placeholder="Objet de la conférence..."></textarea>
+                </label>
+
+                <div class="row">
+                    <label>
+                        Id de l'enseignant
+                        <input type="number" id="enseignantId" name="enseignantId"
+                               required placeholder="Ex : 1">
+                    </label>
+                    <label>
+                        Id de la matière (optionnel)
+                        <input type="number" id="matiereId" name="matiereId"
+                               placeholder="Ex : 3">
+                    </label>
+                </div>
+
+                <div class="row">
+                    <label>
+                        Id du cours en ligne (optionnel)
+                        <input type="number" id="coursId" name="coursId"
+                               placeholder="Ex : 2">
+                    </label>
+                    <label>
+                        Étudiants invités (ids, optionnel)
+                        <input type="text" id="etudiantIds" name="etudiantIds"
+                               placeholder="Ex : 1,2,3">
+                    </label>
+                </div>
+
+                <div class="row">
+                    <label>
+                        Date de début
+                        <input type="datetime-local" id="dateDebut" name="dateDebut">
+                    </label>
+                    <label>
+                        Date de fin
+                        <input type="datetime-local" id="dateFin" name="dateFin">
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    Créer et obtenir le code
+                </button>
+            </form>
+
+            <div id="createResult" class="result hidden"></div>
+        </section>
+
+        <section class="card">
+            <h2>Rejoindre une conférence</h2>
+            <form id="joinForm" class="form">
+                <label>
+                    Code d'accès
+                    <input type="text" id="codeInput" name="code" required
+                           placeholder="Ex : AB12CD" maxlength="6"
+                           style="text-transform:uppercase">
+                </label>
+                <button type="submit" class="btn btn-secondary btn-block">
+                    Rejoindre la visio
+                </button>
+            </form>
+        </section>
+    </div>
+
+    <section class="card">
+        <h2>Conférences programmées</h2>
+
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Code</th>
+                    <th>Début</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(salles)}">
+                    <td colspan="5" class="empty">Aucune conférence programmée.</td>
+                </tr>
+                <tr th:each="salle : ${salles}">
+                    <td th:text="${salle.titre}">Titre</td>
+                    <td>
+                        <code class="code"
+                              th:text="${salle.codeAcces}">AB12CD</code>
+                    </td>
+                    <td th:text="${salle.dateDebut != null} ? ${#temporals.format(salle.dateDebut, 'dd/MM/yyyy HH:mm')} : '—'">
+                        date
+                    </td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${salle.statut.name() == 'EN_COURS'} ? ' badge-live' : ''"
+                              th:text="${salle.statut.name()}">PLANIFIEE</span>
+                    </td>
+                    <td>
+                        <a class="btn btn-small"
+                           th:href="@{'/visio/room/' + ${salle.codeAcces}}">
+                            Entrer
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Historique</h2>
+
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Code</th>
+                    <th>Fin</th>
+                    <th>Statut</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(historique)}">
+                    <td colspan="4" class="empty">Aucune conférence terminée.</td>
+                </tr>
+                <tr th:each="salle : ${historique}">
+                    <td th:text="${salle.titre}">Titre</td>
+                    <td>
+                        <code class="code" th:text="${salle.codeAcces}">AB12CD</code>
+                    </td>
+                    <td th:text="${salle.dateFin != null} ? ${#temporals.format(salle.dateFin, 'dd/MM/yyyy HH:mm')} : '—'">
+                        date
+                    </td>
+                    <td>
+                        <span class="badge" th:text="${salle.statut.name()}">TERMINEE</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+    (function () {
+        const form = document.getElementById('createForm');
+        const result = document.getElementById('createResult');
+        const toast = document.getElementById('toast');
+
+        function getToken() {
+            return localStorage.getItem('token')
+                || localStorage.getItem('jwt')
+                || sessionStorage.getItem('token')
+                || '';
+        }
+
+        function headers(json) {
+            const h = {'Content-Type': 'application/json'};
+            const t = getToken();
+            if (t) h['Authorization'] = 'Bearer ' + t;
+            return h;
+        }
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 4000);
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const etudiantIds = document.getElementById('etudiantIds').value
+                .split(',')
+                .map(v => parseInt(v.trim(), 10))
+                .filter(v => !isNaN(v));
+
+            const payload = {
+                titre: document.getElementById('titre').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                enseignantId: parseInt(document.getElementById('enseignantId').value, 10),
+                matiereId: document.getElementById('matiereId').value
+                    ? parseInt(document.getElementById('matiereId').value, 10)
+                    : null,
+                coursId: document.getElementById('coursId').value
+                    ? parseInt(document.getElementById('coursId').value, 10)
+                    : null,
+                dateDebut: document.getElementById('dateDebut').value
+                    ? new Date(document.getElementById('dateDebut').value).toISOString()
+                    : null,
+                dateFin: document.getElementById('dateFin').value
+                    ? new Date(document.getElementById('dateFin').value).toISOString()
+                    : null,
+                etudiantIds: etudiantIds
+            };
+
+            fetch('/api/visio/salles', {
+                method: 'POST',
+                headers: headers(true),
+                body: JSON.stringify(payload)
+            })
+                .then(r => {
+                    if (!r.ok) throw new Error('Erreur création');
+                    return r.json();
+                })
+                .then(salle => {
+                    result.classList.remove('hidden');
+                    result.innerHTML =
+                        '<p class="ok">Conférence créée ! Code d\'accès : ' +
+                        '<strong class="code">' + salle.codeAcces + '</strong></p>' +
+                        '<a class="btn btn-primary" href="/visio/room/' + salle.codeAcces + '">' +
+                        'Rejoindre la salle</a>';
+                    result.scrollIntoView({behavior: 'smooth'});
+                    showToast('Conférence créée avec succès');
+                })
+                .catch(err => showToast(err.message || 'Impossible de créer la conférence'));
+        });
+
+        const joinForm = document.getElementById('joinForm');
+
+        joinForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const code = document.getElementById('codeInput').value.trim().toUpperCase();
+            if (!code) return;
+            fetch('/api/visio/salles/code/' + code)
+                .then(r => {
+                    if (!r.ok) throw new Error('Code inconnu');
+                    return r.json();
+                })
+                .then(() => window.location.href = '/visio/room/' + code)
+                .catch(() => showToast('Aucune conférence trouvée avec ce code'));
+        });
+    })();
+</script>
+
+</body>
+</html>

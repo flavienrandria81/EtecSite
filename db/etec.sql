@@ -1137,7 +1137,55 @@ ALTER TABLE `soumissions`
 -- Contraintes pour la table `videos`
 --
 ALTER TABLE `videos`
-  ADD CONSTRAINT `FKqx4hx9k3ar16v2ue9x39ovo81` FOREIGN KEY (`leçon_id`) REFERENCES `leçon` (`id`);
+  ADD CONSTRAINT `FKqx4hx9k3ar16v2ue9x39ovo81` FOREIGN KEY (`le��on_id`) REFERENCES `le��on` (`id`);
+
+--
+-- Tables pour le service VISIO (conférence temps réel)
+--
+
+CREATE TABLE IF NOT EXISTS `salle_visio` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `code_acces` varchar(20) NOT NULL UNIQUE,
+  `titre` varchar(255) DEFAULT NULL,
+  `description` varchar(3000) DEFAULT NULL,
+  `enseignant_id` bigint DEFAULT NULL,
+  `matiere_id` bigint DEFAULT NULL,
+  `cours_id` bigint DEFAULT NULL,
+  `date_debut` datetime(6) DEFAULT NULL,
+  `date_fin` datetime(6) DEFAULT NULL,
+  `statut` enum('PLANIFIEE','EN_COURS','TERMINEE') DEFAULT 'PLANIFIEE',
+  `lien_connexion` varchar(500) DEFAULT NULL,
+  `created_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `participant_visio` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `salle_visio_id` bigint NOT NULL,
+  `utilisateur_id` bigint DEFAULT NULL,
+  `nom` varchar(255) DEFAULT NULL,
+  `role` enum('ENSEIGNANT','ETUDIANT') DEFAULT NULL,
+  `session_id` varchar(255) DEFAULT NULL,
+  `actif` bit(1) DEFAULT b'1',
+  `heure_connexion` datetime(6) DEFAULT NULL,
+  `heure_deconnexion` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_participant_salle` (`salle_visio_id`),
+  CONSTRAINT `FK_participant_salle` FOREIGN KEY (`salle_visio_id`) REFERENCES `salle_visio` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `chat_visio` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `salle_visio_id` bigint NOT NULL,
+  `utilisateur_id` bigint DEFAULT NULL,
+  `nom` varchar(255) DEFAULT NULL,
+  `message` varchar(2000) DEFAULT NULL,
+  `date_envoi` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_chat_salle` (`salle_visio_id`),
+  CONSTRAINT `FK_chat_salle` FOREIGN KEY (`salle_visio_id`) REFERENCES `salle_visio` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

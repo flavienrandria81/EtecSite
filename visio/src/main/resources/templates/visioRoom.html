@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Visio — ' + ${salle.titre}">Visio — Conférence</title>
+    <link rel="stylesheet" th:href="@{/css/visio.css}">
+</head>
+<body>
+
+<div id="roomData"
+     th:data-code="${roomCode}"
+     th:data-titre="${salle.titre}"
+     th:data-statut="${salle.statut.name()}"
+     th:data-salle-id="${salle.id}"
+     th:data-enseignant-id="${salle.enseignantId}"
+     th:data-turn="${turnConfig}">
+</div>
+
+<div id="lobby" class="lobby">
+    <div class="card lobby-card">
+        <h2>Rejoindre la conférence</h2>
+        <p class="muted" th:text="${'« ' + salle.titre + ' »'}">titre</p>
+        <p class="muted">
+            Code : <code class="code" th:text="${roomCode}">AB12CD</code>
+        </p>
+
+        <form id="lobbyForm" class="form">
+            <label>
+                Votre nom
+                <input type="text" id="lobbyName" required placeholder="Ex : Jean Rakoto"
+                       autocomplete="name">
+            </label>
+
+            <label>
+                Vous êtes
+                <select id="lobbyRole">
+                    <option value="ENSEIGNANT">Enseignant</option>
+                    <option value="ETUDIANT" selected>Étudiant</option>
+                </select>
+            </label>
+
+            <p id="lobbyError" class="error hidden"></p>
+
+            <button type="submit" class="btn btn-primary btn-block">Entrer dans la salle</button>
+        </form>
+    </div>
+</div>
+
+<div id="room" class="room hidden">
+
+    <header class="room-header">
+        <div>
+            <h2 th:text="${salle.titre}">Titre</h2>
+            <p class="muted">
+                Code <code class="code" th:text="${roomCode}">AB12CD</code>
+                &middot; <span id="participantCount">1</span> participant(s)
+            </p>
+        </div>
+        <div class="room-header-actions">
+            <span id="myRoleBadge" class="badge hidden"></span>
+            <button id="leaveBtn" class="btn btn-danger">Quitter</button>
+        </div>
+    </header>
+
+    <div id="raiseHandBanner" class="raise-hand hidden">
+        &#9995; <span id="raiseHandText"></span>
+        <button id="raiseHandClose" class="btn btn-small">OK</button>
+    </div>
+
+    <div class="room-body">
+        <div id="videoGrid" class="video-grid"></div>
+
+        <aside id="chatPanel" class="chat-panel hidden">
+            <div class="chat-header">
+                <h3>Discussion</h3>
+                <button id="chatToggle" class="btn btn-small" title="Fermer">&#10005;</button>
+            </div>
+            <div id="chatMessages" class="chat-messages"></div>
+            <form id="chatForm" class="chat-input">
+                <input type="text" id="chatText" placeholder="Écrire un message..."
+                       autocomplete="off">
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </form>
+        </aside>
+    </div>
+
+    <footer class="controls">
+        <button id="micBtn" class="btn control-btn active" title="Micro">
+            <span class="icon">&#127908;</span> Micro
+        </button>
+        <button id="camBtn" class="btn control-btn active" title="Caméra">
+            <span class="icon">&#127909;</span> Caméra
+        </button>
+        <button id="screenBtn" class="btn control-btn" title="Partager l'écran">
+            <span class="icon">&#128424;</span> Écran
+        </button>
+        <button id="chatOpenBtn" class="btn control-btn" title="Chat">
+            <span class="icon">&#128172;</span> Chat
+        </button>
+        <button id="handBtn" class="btn control-btn" title="Lever la main">
+            <span class="icon">&#9995;</span> Lever la main
+        </button>
+        <button id="leaveBtn2" class="btn btn-danger">Quitter</button>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script th:src="@{/js/visioRoom.js}"></script>
+
+</body>
+</html>

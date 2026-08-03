@@ -163,6 +163,18 @@ public class GatewayConfig {
                 .route("emails", r -> r.path("/api/emails/**")
                         .uri("lb://ADMIN")) // à confirmer : quel service gère les emails ?
 
+                // =========================
+                // VISIO SERVICE
+                // =========================
+                .route("visio", r -> r.path("/api/visio/**")
+                        .uri("lb://VISIO"))
+
+                .route("visioPages", r -> r.path("/visio", "/visio/**")
+                        .uri("lb://VISIO"))
+
+                .route("visioWs", r -> r.path("/visio-ws/**")
+                        .uri("lb:ws://VISIO"))
+
                 .build();
     }
 }

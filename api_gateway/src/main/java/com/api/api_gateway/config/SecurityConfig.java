@@ -21,6 +21,10 @@ public class SecurityConfig {
                         // public endpoints
                         .pathMatchers("/auth/**").permitAll()
 
+                        // visio pages + websocket (public, sécurité dans le service)
+                        .pathMatchers("/visio", "/visio/**", "/visio-ws/**").permitAll()
+                        .pathMatchers("/api/visio/**").permitAll()
+
                         // roles
                         .pathMatchers("/api/admin/**").hasRole("ADMIN")
                         .pathMatchers("/api/etudiant/**").hasRole("ETUDIANT")

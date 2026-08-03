@@ -1,0 +1,496 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.muted {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+    padding: 0.75rem 1.5rem;
+}
+
+.navbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
+.brand {
+    font-size: 1.3rem;
+    color: #38bdf8;
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* ---------- Layout ---------- */
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #f1f5f9;
+}
+
+/* ---------- Forms ---------- */
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.form input,
+.form textarea,
+.form select {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #e2e8f0;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    width: 100%;
+}
+
+.form input:focus,
+.form textarea:focus,
+.form select:focus {
+    outline: none;
+    border-color: #38bdf8;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border: 1px solid #334155;
+    background: #334155;
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+.btn:hover {
+    background: #475569;
+}
+
+.btn-primary {
+    background: #0284c7;
+    border-color: #0284c7;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #0369a1;
+}
+
+.btn-secondary {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: #15803d;
+}
+
+.btn-danger {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-small {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.control-btn.active {
+    background: #16a34a;
+    border-color: #16a34a;
+}
+
+.control-btn.off {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+.control-btn .icon {
+    font-size: 1rem;
+}
+
+/* ---------- Table ---------- */
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.table th,
+.table td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid #334155;
+}
+
+.table th {
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.empty {
+    text-align: center;
+    color: #94a3b8;
+    padding: 1.5rem !important;
+}
+
+.code {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 0.15rem 0.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #fbbf24;
+    font-family: "Consolas", monospace;
+}
+
+.badge {
+    background: #475569;
+    border-radius: 999px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-live {
+    background: #16a34a;
+    color: #fff;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* ---------- Toast ---------- */
+
+.toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    border: 1px solid #38bdf8;
+    border-radius: 8px;
+    padding: 0.7rem 1.2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+.result {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-radius: 8px;
+    background: #0f172a;
+    border: 1px solid #16a34a;
+}
+
+.result .ok {
+    color: #86efac;
+    margin-bottom: 0.6rem;
+}
+
+/* ---------- Room ---------- */
+
+.room {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.room-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1.5rem;
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+
+.room-header h2 {
+    font-size: 1.05rem;
+}
+
+.room-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.room-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+.video-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.8rem;
+    align-content: start;
+    overflow-y: auto;
+}
+
+.video-tile {
+    position: relative;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-tile video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #0f172a;
+}
+
+.video-tile .video-label {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.video-tile .avatar {
+    font-size: 3rem;
+    color: #64748b;
+}
+
+.video-tile .muted-overlay {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(220, 38, 38, 0.8);
+    border-radius: 6px;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.75rem;
+}
+
+/* ---------- Controls ---------- */
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.75rem;
+    background: #1e293b;
+    border-top: 1px solid #334155;
+    flex-wrap: wrap;
+}
+
+/* ---------- Chat ---------- */
+
+.chat-panel {
+    width: 320px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #334155;
+}
+
+.chat-header h3 {
+    font-size: 0.95rem;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat-msg {
+    background: #0f172a;
+    border-radius: 10px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+.chat-msg.me {
+    background: #164e63;
+    align-self: flex-end;
+}
+
+.chat-msg .chat-meta {
+    font-weight: 600;
+    color: #38bdf8;
+    font-size: 0.75rem;
+    margin-bottom: 0.2rem;
+}
+
+.chat-msg .chat-time {
+    color: #64748b;
+    font-weight: 400;
+}
+
+.chat-input {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    border-top: 1px solid #334155;
+}
+
+.chat-input input {
+    flex: 1;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #e2e8f0;
+    padding: 0.5rem 0.7rem;
+}
+
+/* ---------- Raise hand banner ---------- */
+
+.raise-hand {
+    margin: 0.6rem 1.5rem 0;
+    background: #f59e0b;
+    color: #1e293b;
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+/* ---------- Lobby ---------- */
+
+.lobby {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 50;
+}
+
+.lobby-card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.lobby-card h2 {
+    margin-bottom: 0.25rem;
+}
