@@ -2,83 +2,141 @@ package com.admin.admin.controller;
 
 import com.admin.admin.dto.AdminDto;
 import com.admin.admin.dto.AdminRequestDTO;
+import com.admin.admin.dto.UserResponseDTO;
 import com.admin.admin.entity.Admin;
 import com.admin.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admins")
+@RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AdminController {
-
 
     private final AdminService adminService;
 
 
-
     /**
-     * Création d'un ADMIN
-     * Accessible uniquement par SUPER_ADMIN
+     * ============================================================
+     * LOGIN ADMIN
+     * ============================================================
+     *
+     * POST /api/admin/login
+     *
+     * Cette route est publique.
+     *
+     * Exemple de requête :
+     *
+     * {
+     *     "username": "admin",
+     *     "password": "123456"
+     * }
      */
-    @PostMapping("/register")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<?> registerAdmin(
+    @PostMapping("/login")
+    public ResponseEntity<?> login(
             @RequestBody AdminRequestDTO request
-    ){
+    ) {
 
-        Admin admin =
-                adminService.createAdmin(request);
+        try {
 
+            UserResponseDTO response =
+                    adminService.login(request);
 
-        return ResponseEntity.ok(admin);
+            return ResponseEntity.ok(response);
 
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .status(401)
+                    .body(e.getMessage());
+        }
     }
 
 
+    /**
+     * ============================================================
+     * CRÉER UN ADMIN
+     * ============================================================
+     *
+     * POST /api/admin
+     */
+    @PostMapping("/registration")
+    public ResponseEntity<?> createAdmin(
+            @RequestBody AdminRequestDTO request
+    ) {
 
+        try {
+
+            Admin admin =
+                    adminService.createAdmin(request);
+
+            return ResponseEntity.ok(admin);
+
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
+        }
+    }
 
 
     /**
-     * Récupérer le profil complet d'un ADMIN
+     * ============================================================
+     * RÉCUPÉRER UN ADMIN
+     * ============================================================
+     *
+     * GET /api/admin/{userId}
      */
-    @GetMapping("/profile/{userId}")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
-    public ResponseEntity<AdminDto> getAdminProfile(
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getAdmin(
             @PathVariable Long userId
-    ){
+    ) {
 
-        AdminDto adminDto =
-                adminService.getAdmin(userId);
+        try {
 
+            AdminDto admin =
+                    adminService.getAdmin(userId);
 
-        return ResponseEntity.ok(adminDto);
+            return ResponseEntity.ok(admin);
 
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .notFound()
+                    .build();
+        }
     }
 
 
-
-
-
     /**
-     * Supprimer un ADMIN
-     * Seulement SUPER_ADMIN
+     * ============================================================
+     * SUPPRIMER UN ADMIN
+     * ============================================================
+     *
+     * DELETE /api/admin/{userId}
      */
-    @DeleteMapping("/delete/{userId}")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteAdmin(
             @PathVariable Long userId
-    ){
+    ) {
 
-        adminService.deleteAdmin(userId);
+        try {
 
+            adminService.deleteAdmin(userId);
 
-        return ResponseEntity.ok(
-                "Administrateur supprimé avec succès"
-        );
+            return ResponseEntity.ok(
+                    "Administrateur supprimé avec succès"
+            );
 
+        } catch (RuntimeException e) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
+        }
     }
-
 }
+

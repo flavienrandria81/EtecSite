@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // <-- Permet d'activer @PreAuthorize dans votre AdminController
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -20,19 +20,38 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         return http
                 .csrf(AbstractHttpConfigurer::disable)
+
                 .authorizeHttpRequests(auth -> auth
-                        // Toutes les routes d'administration nécessitent d'être authentifié par JWT
-                        .requestMatchers("/api/admins/**").authenticated()
+
+                        // SWAGGER (Public)
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-                        .anyRequest().authenticated())
-                // On applique le filtre JWT avant le filtre de base de Spring Security
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
+                        // 🟢 ENDPOINTS PUBLICS (Accessibles sans token JWT)
+                        .requestMatchers(
+                                "/api/admin/login",
+                                "/api/admin/registration"
+                        ).permitAll()
+
+                        // 🔴 TOUS LES AUTRES ENDPOINTS ADMIN (Accessibles uniquement avec un JWT valide)
+                        .requestMatchers("/api/admin/**").authenticated()
+
+                        // TOUT LE RESTE
+                        .anyRequest().authenticated()
+                )
+
+                // Filtre JWT
+                .addFilterBefore(
+                        jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+
                 .build();
     }
 }

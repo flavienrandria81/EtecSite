@@ -40,10 +40,10 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                                auth.requestMatchers("/api/auth/register-admin").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                                auth.requestMatchers("/api/auth/register-admin").permitAll()
                                         .requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/etudiant/**").hasRole("ETUDIANT")
-                                .requestMatchers("/api/enseignant/**").hasRole("ENSEIGNANT")
+                                .requestMatchers("/api/etudiant/**").permitAll()
+                                .requestMatchers("/api/enseignant/**").permitAll()
                                         .requestMatchers(
                                                 "/v3/api-docs/**",
                                                 "/swagger-ui/**",

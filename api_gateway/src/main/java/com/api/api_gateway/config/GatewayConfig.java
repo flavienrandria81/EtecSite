@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class GatewayConfig {
 
     @Bean
-    public RouteLocator routes(RouteLocatorBuilder builder,
-                               JwtAuthenticationFilter filter) {
+    public RouteLocator routes(RouteLocatorBuilder builder) {
 
         return builder.routes()
 
@@ -18,11 +17,10 @@ public class GatewayConfig {
                 // UTILISATEUR SERVICE
                 // =========================
                 .route("utilisateur", r -> r.path("/api/users/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://UTILISATEUR"))
 
                 // =========================
-                // AUTH (public)
+                // AUTH
                 // =========================
                 .route("auth", r -> r.path("/api/auth/**")
                         .uri("lb://UTILISATEUR"))
@@ -31,108 +29,124 @@ public class GatewayConfig {
                 // ADMIN SERVICE
                 // =========================
                 .route("admin", r -> r.path("/api/admin/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ADMIN"))
 
+                // =========================
+                // ORGANIGRAMMES
+                // =========================
                 .route("organigrammes", r -> r.path("/api/organigrammes/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ADMIN"))
 
+                // =========================
+                // NOTIFICATIONS
+                // =========================
                 .route("notifications", r -> r.path("/api/notifications/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ADMIN"))
 
+                // =========================
+                // ANNÉES UNIVERSITAIRES
+                // =========================
                 .route("anneesUniv", r -> r.path("/api/anneesUniv/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ADMIN"))
 
+                // =========================
+                // MOTS
+                // =========================
                 .route("mots", r -> r.path("/api/mots/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ADMIN"))
 
+                // =========================
+                // SLIDES
+                // =========================
                 .route("slides", r -> r.path("/api/slides/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
-                        .uri("lb://ADMIN"))
+                        .uri("lb://slides"))
 
+                // =========================
+                // ENCADREMENTS
+                // =========================
                 .route("encadrements", r -> r.path("/api/encadrements/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ADMIN"))
 
+                // =========================
+                // MEMOIRES
+                // =========================
                 .route("memoires", r -> r.path("/api/memoires/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ADMIN"))
 
                 // =========================
                 // ETUDIANT SERVICE
                 // =========================
-                .route("etudiants", r -> r.path("/api/etudiant", "/api/etudiant/**", "/api/etudiants", "/api/etudiants/**")
-                        .filters(f -> f
-                                .filter(filter.apply(new JwtAuthenticationFilter.Config()))
-                                .rewritePath("/api/etudiant[s]?(?<segment>/?.*)", "/etudiants${segment}"))
+                .route("etudiants", r -> r.path(
+                                "/api/etudiant",
+                                "/api/etudiant/**",
+                                "/api/etudiants",
+                                "/api/etudiants/**")
+                        .filters(f -> f.rewritePath(
+                                "/api/etudiant[s]?(?<segment>/?.*)",
+                                "/etudiants${segment}"
+                        ))
                         .uri("lb://ETUDIANT"))
 
                 .route("notes", r -> r.path("/api/notes/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ETUDIANT"))
 
                 .route("moyennes", r -> r.path("/api/moyennes/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ETUDIANT"))
 
                 .route("presences", r -> r.path("/api/presences/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ETUDIANT"))
 
                 .route("historiques", r -> r.path("/api/historiques/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://ETUDIANT"))
 
                 // =========================
                 // ENSEIGNANT SERVICE
                 // =========================
-                .route("enseignants", r -> r.path("/api/enseignant", "/api/enseignant/**", "/api/enseignants", "/api/enseignants/**", "/api/Enseignants", "/api/Enseignants/**")
-                        .filters(f -> f
-                                .filter(filter.apply(new JwtAuthenticationFilter.Config()))
-                                .rewritePath("/api/enseignant[s]?(?<segment>/?.*)", "/api/Enseignants${segment}"))
+                .route("enseignants", r -> r.path(
+                                "/api/enseignant",
+                                "/api/enseignant/**",
+                                "/api/enseignants",
+                                "/api/enseignants/**",
+                                "/api/Enseignants",
+                                "/api/Enseignants/**")
+                        .filters(f -> f.rewritePath(
+                                "/api/enseignant[s]?(?<segment>/?.*)",
+                                "/api/Enseignants${segment}"
+                        ))
                         .uri("lb://ENSEIGNANT"))
 
                 // =========================
                 // COURS SERVICE
                 // =========================
                 .route("cours", r -> r.path("/api/cours/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
                 .route("matieres", r -> r.path("/api/matieres/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
                 .route("chapitres", r -> r.path("/api/chapitres/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
                 .route("domains", r -> r.path("/api/domains/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
                 .route("ressources", r -> r.path("/api/ressours/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
                 .route("semestres", r -> r.path("/api/semestres/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
                 .route("niveau", r -> r.path("/api/niveau/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
-                .route("filiers", r -> r.path("/api/filiers", "/api/filiers/**", "/api/filieres", "/api/filieres/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
+                .route("filiers", r -> r.path(
+                                "/api/filiers",
+                                "/api/filiers/**",
+                                "/api/filieres",
+                                "/api/filieres/**")
                         .uri("lb://FILIERES"))
 
                 .route("emploiDuTemps", r -> r.path("/api/emploiDuTemps/**")
-                        .filters(f -> f.filter(filter.apply(new JwtAuthenticationFilter.Config())))
                         .uri("lb://COURS"))
 
                 .route("formationInitiale", r -> r.path("/api/formationInitiale/**")
@@ -141,35 +155,48 @@ public class GatewayConfig {
                 .route("formationContinue", r -> r.path("/api/formationContinue/**")
                         .uri("lb://COURS"))
 
-                .route("formationEnLigne", r -> r.path("/api/formationEnLigne", "/api/formationEnLigne/**")
-                        .filters(f -> f.rewritePath("/api/formationEnLigne(?<segment>/?.*)", "/formation_enligne${segment}"))
+                .route("formationEnLigne", r -> r.path(
+                                "/api/formationEnLigne",
+                                "/api/formationEnLigne/**")
+                        .filters(f -> f.rewritePath(
+                                "/api/formationEnLigne(?<segment>/?.*)",
+                                "/formation_enligne${segment}"
+                        ))
                         .uri("http://localhost:8083"))
 
                 // =========================
-                // ACTUALITE SERVICE (public)
+                // ACTUALITES
                 // =========================
                 .route("actualites", r -> r.path("/api/actualites/**")
                         .uri("lb://ACTUALITE"))
 
+                // =========================
+                // ENCADREURS
+                // =========================
                 .route("encadreurs", r -> r.path("/api/encadreurs/**")
                         .uri("lb://ENCADREURS"))
 
+                // =========================
+                // CONTACTS
+                // =========================
                 .route("contacts", r -> r.path("/api/contacts/**")
                         .uri("lb://CONTACTS"))
 
                 // =========================
-                // EMAILS (public — à rattacher au bon service)
+                // EMAILS
                 // =========================
                 .route("emails", r -> r.path("/api/emails/**")
-                        .uri("lb://ADMIN")) // à confirmer : quel service gère les emails ?
+                        .uri("lb://ADMIN"))
 
                 // =========================
-                // VISIO SERVICE
+                // VISIO
                 // =========================
                 .route("visio", r -> r.path("/api/visio/**")
                         .uri("lb://VISIO"))
 
-                .route("visioPages", r -> r.path("/visio", "/visio/**")
+                .route("visioPages", r -> r.path(
+                                "/visio",
+                                "/visio/**")
                         .uri("lb://VISIO"))
 
                 .route("visioWs", r -> r.path("/visio-ws/**")

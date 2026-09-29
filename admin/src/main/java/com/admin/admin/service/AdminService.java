@@ -14,11 +14,67 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AdminService {
 
-
     private final AdminRepository adminRepository;
 
     private final UserFeignClient userFeignClient;
 
+
+    /**
+     * ============================================================
+     * LOGIN ADMIN
+     * ============================================================
+     *
+     * Le username et le password sont envoyés depuis React.
+     *
+     * Exemple :
+     *
+     * {
+     *     "username": "admin",
+     *     "password": "123456"
+     * }
+     *
+     * La vérification réelle du compte doit être effectuée
+     * par le User Service puisque le mot de passe est géré
+     * dans le User Service.
+     */
+    public UserResponseDTO login(AdminRequestDTO request) {
+
+        if (request == null) {
+            throw new RuntimeException("Les données de connexion sont obligatoires");
+        }
+
+        if (request.getUsername() == null ||
+                request.getUsername().trim().isEmpty()) {
+
+            throw new RuntimeException("Le username est obligatoire");
+        }
+
+        if (request.getPassword() == null ||
+                request.getPassword().trim().isEmpty()) {
+
+            throw new RuntimeException("Le mot de passe est obligatoire");
+        }
+
+
+        /*
+         * Ici, le User Service doit vérifier :
+         *
+         * username
+         * password
+         *
+         * et retourner les informations de l'utilisateur
+         * ainsi que le JWT si ton User Service le génère.
+         *
+         * Cette partie dépend de la méthode exposée
+         * actuellement par ton UserFeignClient.
+         */
+
+
+        // À remplacer par ton appel réel au User Service
+        throw new RuntimeException(
+                "La méthode de connexion du User Service doit être configurée dans UserFeignClient"
+        );
+    }
 
 
     /**
@@ -28,11 +84,9 @@ public class AdminService {
      */
     public Admin createAdmin(AdminRequestDTO request) {
 
-
         // 1 - Création du compte utilisateur
         UserRegistrationDTO user =
                 new UserRegistrationDTO();
-
 
         user.setUsername(request.getUsername());
 
@@ -41,28 +95,23 @@ public class AdminService {
         user.setPassword(request.getPassword());
 
 
-
         UserResponseDTO userResponse =
                 userFeignClient
                         .registerAdmin(user)
                         .getBody();
 
 
-
-        if(userResponse == null){
+        if (userResponse == null) {
 
             throw new RuntimeException(
                     "Erreur lors de la création du compte utilisateur"
             );
-
         }
-
 
 
         // 2 - Création du profil Admin local
 
         Admin admin = new Admin();
-
 
         admin.setUserId(
                 userResponse.getId()
@@ -84,20 +133,14 @@ public class AdminService {
         );
 
 
-
         return adminRepository.save(admin);
-
     }
-
-
-
 
 
     /**
      * Récupérer le profil complet Admin
      */
     public AdminDto getAdmin(Long userId) {
-
 
         Admin admin =
                 adminRepository.findByUserId(userId)
@@ -108,12 +151,10 @@ public class AdminService {
                         );
 
 
-
         UserResponseDTO authInfo =
                 userFeignClient
                         .getUserById(userId)
                         .getBody();
-
 
 
         AdminDto adminDto =
@@ -123,8 +164,7 @@ public class AdminService {
         adminDto.setUserId(userId);
 
 
-
-        if(authInfo != null){
+        if (authInfo != null) {
 
             adminDto.setUsername(
                     authInfo.getUsername()
@@ -137,9 +177,7 @@ public class AdminService {
             adminDto.setRole(
                     authInfo.getRole()
             );
-
         }
-
 
 
         adminDto.setNom(
@@ -157,13 +195,8 @@ public class AdminService {
         );
 
 
-
         return adminDto;
-
     }
-
-
-
 
 
     /**
@@ -172,10 +205,8 @@ public class AdminService {
      */
     public void deleteAdmin(Long userId) {
 
-
         // suppression dans User Service
         userFeignClient.deleteUser(userId);
-
 
 
         // suppression profil Admin local
@@ -184,7 +215,5 @@ public class AdminService {
                 .ifPresent(
                         adminRepository::delete
                 );
-
     }
-
 }

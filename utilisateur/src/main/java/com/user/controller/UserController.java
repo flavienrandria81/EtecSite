@@ -122,8 +122,7 @@ public class UserController {
 
 
     /**
-     * Inscription normale
-     * Exemple : étudiant
+     * Inscription normale (étudiant ou enseignant)
      */
     @PostMapping("/registration")
     public ResponseEntity<?> register(
@@ -138,10 +137,12 @@ public class UserController {
 
         }
 
-
-        // Rôle par défaut
-        user.setRole("ETUDIANT");
-
+        // Rôle par défaut ETUDIANT sauf si ENSEIGNANT spécifié (sécurisation contre élévation de privilèges)
+        if(user.getRole() == null || user.getRole().trim().isEmpty() || "ADMIN".equalsIgnoreCase(user.getRole()) || "SUPER_ADMIN".equalsIgnoreCase(user.getRole())){
+            user.setRole("ETUDIANT");
+        } else {
+            user.setRole(user.getRole().toUpperCase());
+        }
 
         user.setPassword(
                 passwordEncoder.encode(
@@ -149,12 +150,18 @@ public class UserController {
                 )
         );
 
-
         User savedUser =
                 userRepository.save(user);
 
-
         return ResponseEntity.ok(savedUser);
+    }
+
+    /**
+     * Récupérer tous les utilisateurs
+     */
+    @GetMapping("/users")
+    public ResponseEntity<java.util.List<User>> getAllUsers() {
+        return ResponseEntity.ok(userRepository.findAll());
     }
 
 
